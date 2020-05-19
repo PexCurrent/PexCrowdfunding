@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ch " xmlns:th="http://www.thymeleaf.org">
+<head th:replace="nav::head(~{::title},~{::link},~{::script})">
+
+    <title>项目</title>
+    <link rel="stylesheet" href="/css/crowfunding_detail.css">
+    <link rel="stylesheet" href="/css/comment.css">
+
+    <script></script>
+
+</head>
+
+<body>
+<script th:replace="nav::logoout"></script>
+<nav th:replace="nav::topbar"></nav>
+<div id="container">
+    <div class="project-top clearfix">
+        <div class="top-wrap clearfix">
+            <div class="prompt" id="report_warning" style="display: none;">
+            </div>
+
+
+
+
+            <div class="short-cut">
+                <h3 class="title"><span>{{crowdfunding.title}}</span></h3>
+                <div class="video">
+                    <p class="vedio_url" style="display: none;" data-duration="81">f95f27eed09c4b3fba70988f3bc6d720</p>
+                    <img id="big_logo" width="100%" height="518" v-bind:src="crowdfunding.showpic" alt="" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'">
+
+
+                </div>
+                <div class="short-intro">
+                    <span>
+                {{crowdfunding.content}}
+                    </span>
+                </div>
+            </div>
+            <div class="project-info">
+                <div class="sponsor-info clearfix">
+                    <div class="sponsor-l">
+                        <div class="name team clearfix"><span>{{crowdfunding.creatername}}</span><i class="iconfont icon-downmore"></i></div>
+                        <p>发起的项目</p>                         <div class="authen">
+                        <div class="realname enterprise"></div>
+
+                    </div>
+                        <p class="tags clearfix">
+                            <span><i class="iconfont icon-location"></i>{{creater_habitation}}</span>
+                            <span class="line">|</span>
+                            <span><i class="iconfont icon-tag"></i>出版</span>
+                        </p>
+                    </div>
+                    <a href="https://me.modian.com/u/detail?uid=4975964" target="_blank" class="avater"><img v-bind:src="creater_acvtor" ><span class="blue-v"></span></a>
+                </div>
+                <div class="center-wrap">
+                    <!--进行中-->
+
+
+
+
+
+                    <!--进行中-->
+                    <div class="center">
+                        <div class="center-top">
+                            <div class="col1 project-goal">
+
+                                <h3>价格¥<span  >      {{item.price}}</span></h3>
+
+                                <p class="progress">
+                                    <span class="inner" v-bind:style="{width:100}"></span>
+                                </p>
+
+                                <p class="txt clearfloat">
+                                    <span class="goal-money">众筹档位价格 {{item.crowdfunding.gear.supportAmount}}</span>
+                                    <span class="percent" rate="100">价格上转{{pargress}}</span>
+                                </p>
+                            </div>
+                            <div class="col2 remain-time">
+                                <h3>{{item.num}}</h3>
+                                <p>商品剩余库存</p>
+                            </div>
+                            <div class="col3 support-people">
+                                <h3><span backer_count="57037">{{item.time}}</span>人</h3>
+                                <p>购买次数</p>
+                            </div>
+                        </div>
+
+                        <div class="buttons clearfloat">
+                            <a href="#fanchang" v-if="item.itemstatus=='上线中'&&item.num==0"  style="background-color: #bcbfc3" class="end-btn btn fail-btn"><i class="iconfont icon-right"></i> 售罄</a>
+                            <a href="#fanchang" v-else-if="item.itemstatus=='上线中'&&item.num>0"     class=" success-btn btn"><i class="iconfont icon-right"></i>返厂购买</a>
+                            <a v-else  style="background-color: #bcbfc3" class="end-btn btn fail-btn"><i class="iconfont icon-star"></i>暂时下架</a>
+                        </div>
+                        <div class="create-txt" id="my_back_info">
+                            该商品已经上架商品区，如果错过之前的众筹，可以在此购买，但为了保护众筹支持者的权益，众筹商品的价格有所上涨，请您见谅！</div>
+                        <div class="project-status"></div>
+                    </div>
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="project-nav clearfix">
+        <div class="project-nav-wrap">
+            <div class="nav-wrap-inner">
+                <ul class="nav-left">
+                    <li class="active"><a href="#projectDetail">项目详情</a></li>
+                    <li class="pro-gengxin">项目更新 <span upadte_count="57037">7</span></li>
+                    <li class="nav-comment"><a href="#comment">评论 <span comment_count="57037">334</span></a></li>
+                    <li class="dialog_user_list support_user" data-type="backer_list" data-count="637" data-origin_id="57037">支持者 <span backer_count="57037">637</span></li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="project-main">
+        <div class="main-wrap clearfix">
+            <div class="main-left">
+                <!--                项目详情-->
+                <div class="project-content" id="projectDetail">
+                    <h3 class="tit">项目详情</h3>
+                    <div class="content-wrap html-from-editor" v-html="crowdfunding.details">
+
+
+
+
+                    </div>
+                    <!--  公共评论区域 【发表评论区 + 精彩评论列表 + 常规评论列表】  -->
+
+
+                    <div class="common-comment" id="comment">
+                        <h3 class="tit comment_num"><span id="common_comment_count">334</span> 条评论</h3>
+
+                        <div class="common-comment-wrap">
+                            <div class="common-comment-box clearfloat">
+                                <div class="common-box-left">
+                                    <div class="avater"><a href="https://me.modian.com/u/user_index" target="_blank"><img src="https://q.qlogo.cn/qqapp/1103300332/D4B4F4268C2DA0322D57BEFB0CCB117D/100" alt=""></a></div>
+                                </div>
+                                <div class="common-box-right">
+                                    <div class="comment-textarea-wrap">
+                                        <textarea id="comment-textarea" class="comment-textarea cctextarea" placeholder="在这里发表你的看法..."></textarea>
+                                    </div>
+                                    <input type="hidden" name="" class="attachment" id="attachment">
+
+                                    <div class="common-comment-bar clearfloat">
+
+                                        <div class="bar-right">
+
+                                            <a href="javascript:;" class="comment-submit "  style="background-color: #00cba6;"  v-on:click="fabiao()">发表</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <!--  评论列表  -->
+                        <div class="comment-area">    <!--   精彩评论列表  -->
+                            <ul class="comment-lists splendid-comment">
+                                <li class="comment-list" data-reply-id="622425">
+                                    <div class="comment-item-top clearfix">
+                                        <div class="top-left">
+                                            <div class="avater">
+                                                <a href="https://me.modian.com/u/detail?uid=3084371">
+                                                    <img src="https://tva2.sinaimg.cn/crop.0.0.180.180.180/63af2768jw1e8qgp5bmzyj2050050aa8.jpg" onerror="javascript:this.src='https://s.moimg.net/img/web4-0/default_profile@3x.png'" alt="">
+
+                                                </a>
+                                            </div>
+                                            <div class="user-info">
+                                                <p class="nickname">
+                                                    <a href="https://me.modian.com/u/detail?uid=3084371">
+                                                        呸啊
+                                                    </a>
+                                                    <span class="honor gold_pig_4"></span>
+                                                </p>
+                                                <p class="time">2019-04-30 20:52</p>
+                                            </div>
+                                        </div>
+                                        <div class="top-right">
+                <span style="display:none">
+                    <i class="iconfont icon-report"></i> <i>举报</i>
+                </span>
+                                            <span class="comment-replay" data-cur="parent" data-reply_rid="622425" data-post_id="81405" data-reply_ruid="3084371">
+                    <i class="iconfont icon-edit"></i> <i>回复</i>
+                </span>
+                                            <span data-post_id="81405" data-favor_uid="3084371" data-favor_count="23" data-reply_id="622425">
+                    <i class="iconfont icon-like"></i> <i class="favor_count">23</i>
+                </span>
+                                        </div>
+                                    </div>
+                                    <div class="comment-txt"> 为什么没有单册+信封+观影卡的选项呀，难受。<br>放个大眼仔仔吸引注意 </div>
+
+                                    <div class="comment-img-list img_sw_field">
+                                        <div class="comment-img-item img_item" data-url="https://p.moimg.net/bbs_attachments/2019/04/30/20190430_1556628757_6452.jpg?imageMogr2/auto-orient/strip" style="background: url(https://p.moimg.net/bbs_attachments/2019/04/30/20190430_1556628757_6452.jpg?imageMogr2/auto-orient/strip) center center / cover no-repeat;"></div>
+                                    </div>
+
+                                    <ul class="sub-comment">
+                                        <li>
+                                            <div class="sub-comment-txt">
+                                                <a href="https://me.modian.com/u/detail?uid=4879418"><span>姚锋</span></a>
+                                                回复
+                                                <a href="https://me.modian.com/u/detail?uid=3084371"><span>呸啊</span></a>: 谢谢你的提示，我们看看是否可以增加一档 </div>
+                                            <div class="sub-b clearfix">
+                                                <span class="sub-time">2019-04-30 21:47</span>
+                                                <div class="sub-btn">
+                                                    <span style="display:none"><i class="iconfont icon-report"></i> <i>举报</i></span>
+                                                    <span class="comment-replay" data-cur="child" data-reply_rid="622425" data-reply_ruid="4879418" data-post_id="81405" data-reply_sub_rid="622455"><i class="iconfont icon-edit"></i> <i>回复</i></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="sub-comment-txt">
+                                                <a href="https://me.modian.com/u/detail?uid=3337939"><span>子溪</span></a>
+                                                回复
+                                                <a href="https://me.modian.com/u/detail?uid=3084371"><span>呸啊</span></a>: 臣复议！！！再加个手环大全套的！不要分开！一定入！ </div>
+                                            <div class="sub-b clearfix">
+                                                <span class="sub-time">2019-05-01 00:42</span>
+                                                <div class="sub-btn">
+                                                    <span style="display:none"><i class="iconfont icon-report"></i> <i>举报</i></span>
+                                                    <span class="comment-replay" data-cur="child" data-reply_rid="622425" data-reply_ruid="3337939" data-post_id="81405" data-reply_sub_rid="622560"><i class="iconfont icon-edit"></i> <i>回复</i></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="sub-comment-txt">
+                                                <a href="https://me.modian.com/u/detail?uid=4879418"><span>姚锋</span></a>
+                                                回复
+                                                <a href="https://me.modian.com/u/detail?uid=3337939"><span>子溪</span></a>: 正在讨论增加档位！谢谢支持！ </div>
+                                            <div class="sub-b clearfix">
+                                                <span class="sub-time">2019-05-01 06:48</span>
+                                                <div class="sub-btn">
+                                                    <span style="display:none"><i class="iconfont icon-report"></i> <i>举报</i></span>
+                                                    <span class="comment-replay" data-cur="child" data-reply_rid="622425" data-reply_ruid="4879418" data-post_id="81405" data-reply_sub_rid="622635"><i class="iconfont icon-edit"></i> <i>回复</i></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="hide-sub-comment">
+                                            <div class="sub-comment-txt">
+                                                <a href="https://me.modian.com/u/detail?uid=4975964"><span>自明诚文化</span></a>
+                                                回复
+                                                <a href="https://me.modian.com/u/detail?uid=3084371"><span>呸啊</span></a>: 谢谢你的建议与关注。 </div>
+                                            <div class="sub-b clearfix">
+                                                <span class="sub-time">2019-05-01 09:02</span>
+                                                <div class="sub-btn">
+                                                    <span style="display:none"><i class="iconfont icon-report"></i> <i>举报</i></span>
+                                                    <span class="comment-replay" data-cur="child" data-reply_rid="622425" data-reply_ruid="4975964" data-post_id="81405" data-reply_sub_rid="622672"><i class="iconfont icon-edit"></i> <i>回复</i></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="hide-sub-comment">
+                                            <div class="sub-comment-txt">
+                                                <a href="https://me.modian.com/u/detail?uid=4879418"><span>姚锋</span></a>
+                                                回复
+                                                <a href="https://me.modian.com/u/detail?uid=3337939"><span>子溪</span></a>: 已经修改了你需要的档位，谢谢你的建议！ </div>
+                                            <div class="sub-b clearfix">
+                                                <span class="sub-time">2019-05-01 10:56</span>
+                                                <div class="sub-btn">
+                                                    <span style="display:none"><i class="iconfont icon-report"></i> <i>举报</i></span>
+                                                    <span class="comment-replay" data-cur="child" data-reply_rid="622425" data-reply_ruid="4879418" data-post_id="81405" data-reply_sub_rid="622747"><i class="iconfont icon-edit"></i> <i>回复</i></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="hide-sub-comment">
+                                            <div class="sub-comment-txt">
+                                                <a href="https://me.modian.com/u/detail?uid=3337939"><span>子溪</span></a>
+                                                回复
+                                                <a href="https://me.modian.com/u/detail?uid=4879418"><span>姚锋</span></a>: 谢谢( ´▽｀)！！！爱你 </div>
+                                            <div class="sub-b clearfix">
+                                                <span class="sub-time">2019-05-01 11:01</span>
+                                                <div class="sub-btn">
+                                                    <span style="display:none"><i class="iconfont icon-report"></i> <i>举报</i></span>
+                                                    <span class="comment-replay" data-cur="child" data-reply_rid="622425" data-reply_ruid="3337939" data-post_id="81405" data-reply_sub_rid="622751"><i class="iconfont icon-edit"></i> <i>回复</i></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li class="hide-sub-comment">
+                                            <div class="sub-comment-txt">
+                                                <a href="https://me.modian.com/u/detail?uid=6031600"><span>一帘幽Meng</span></a>
+                                                回复
+                                                <a href="https://me.modian.com/u/detail?uid=4879418"><span>姚锋</span></a>: 观影卡是什么意思？ </div>
+                                            <div class="sub-b clearfix">
+                                                <span class="sub-time">2019-05-18 23:01</span>
+                                                <div class="sub-btn">
+                                                    <span style="display:none"><i class="iconfont icon-report"></i> <i>举报</i></span>
+                                                    <span class="comment-replay" data-cur="child" data-reply_rid="622425" data-reply_ruid="6031600" data-post_id="81405" data-reply_sub_rid="676999"><i class="iconfont icon-edit"></i> <i>回复</i></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <div class="downmore"><a class="sub-comment-more" style="cursor: pointer;" data-post_id="81405" data-reply_id="">更多回复<i class="iconfont icon-downmore"></i></a></div>
+                                </li>
+                                <li class="comment-list" data-reply-id="641821">
+                                    <div class="comment-item-top clearfix">
+                                        <div class="top-left">
+                                            <div class="avater">
+                                                <a href="https://me.modian.com/u/detail?uid=5171650">
+                                                    <img src="https://thirdwx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTLyEWO2T2Brg9eg4H5VeYibAHiaubRib36394anpm4L71Ghc9TdOKjbH8Ht2K2iavUZCrukhrNEIl5OHg/132" onerror="javascript:this.src='https://s.moimg.net/img/web4-0/default_profile@3x.png'" alt="">
+
+                                                </a>
+                                            </div>
+                                            <div class="user-info">
+                                                <p class="nickname">
+                                                    <a href="https://me.modian.com/u/detail?uid=5171650">
+                                                        41#
+                                                    </a>
+                                                    <span class="honor gold_pig_3"></span><span class="honor commenter_6"></span>
+                                                </p>
+                                                <p class="time">2019-05-09 22:10</p>
+                                            </div>
+                                        </div>
+                                        <div class="top-right">
+                <span style="display:none">
+                    <i class="iconfont icon-report"></i> <i>举报</i>
+                </span>
+                                            <span class="comment-replay" data-cur="parent" data-reply_rid="641821" data-post_id="81405" data-reply_ruid="5171650">
+                    <i class="iconfont icon-edit"></i> <i>回复</i>
+                </span>
+                                            <span data-post_id="81405" data-favor_uid="5171650" data-favor_count="20" data-reply_id="641821">
+                    <i class="iconfont icon-like"></i> <i class="favor_count">20</i>
+                </span>
+                                        </div>
+                                    </div>
+                                    <div class="comment-txt"> 顺便纪念一下这一刻🤘 </div>
+
+                                    <div class="comment-img-list img_sw_field">
+                                        <div class="comment-img-item img_item" data-url="https://p.moimg.net/bbs_attachments/2019/05/09/20190509_1557411019_2486.jpg?imageMogr2/auto-orient/strip" style="background: url(https://p.moimg.net/bbs_attachments/2019/05/09/20190509_1557411019_2486.jpg?imageMogr2/auto-orient/strip) center center / cover no-repeat;"></div>
+                                    </div>
+
+                                    <ul class="sub-comment">
+                                        <li>
+                                            <div class="sub-comment-txt">
+                                                <a href="https://me.modian.com/u/detail?uid=4860296"><span>王雷</span></a>
+                                                回复
+                                                <a href="https://me.modian.com/u/detail?uid=5171650"><span>41#</span></a>: 这数字真心牛逼了 </div>
+                                            <div class="sub-b clearfix">
+                                                <span class="sub-time">2019-05-09 22:12</span>
+                                                <div class="sub-btn">
+                                                    <span style="display:none"><i class="iconfont icon-report"></i> <i>举报</i></span>
+                                                    <span class="comment-replay" data-cur="child" data-reply_rid="641821" data-reply_ruid="4860296" data-post_id="81405" data-reply_sub_rid="641838"><i class="iconfont icon-edit"></i> <i>回复</i></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="sub-comment-txt">
+                                                <a href="https://me.modian.com/u/detail?uid=5171650"><span>41#</span></a>
+                                                回复
+                                                <a href="https://me.modian.com/u/detail?uid=4860296"><span>王雷</span></a>: ✌ </div>
+                                            <div class="sub-b clearfix">
+                                                <span class="sub-time">2019-05-09 22:13</span>
+                                                <div class="sub-btn">
+                                                    <span style="display:none"><i class="iconfont icon-report"></i> <i>举报</i></span>
+                                                    <span class="comment-replay" data-cur="child" data-reply_rid="641821" data-reply_ruid="5171650" data-post_id="81405" data-reply_sub_rid="641839"><i class="iconfont icon-edit"></i> <i>回复</i></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="sub-comment-txt">
+                                                <a href="https://me.modian.com/u/detail?uid=4879418"><span>姚锋</span></a>
+                                                回复
+                                                <a href="https://me.modian.com/u/detail?uid=4860296"><span>王雷</span></a>: 哇噻，这数字真nb了！这么巧！ </div>
+                                            <div class="sub-b clearfix">
+                                                <span class="sub-time">2019-05-09 23:15</span>
+                                                <div class="sub-btn">
+                                                    <span style="display:none"><i class="iconfont icon-report"></i> <i>举报</i></span>
+                                                    <span class="comment-replay" data-cur="child" data-reply_rid="641821" data-reply_ruid="4879418" data-post_id="81405" data-reply_sub_rid="642209"><i class="iconfont icon-edit"></i> <i>回复</i></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+
+                            <!--  精彩评论分割线  -->
+                            <div class="comment-line">
+                                <a href="javascript:;" class="btn">
+                                    <span class="hot-comment-more" data-post_id="81405">更多精彩评论</span>
+                                    <i class="iconfont icon-downmore"></i>
+                                </a>
+                            </div>
+
+                            <!--   普通评论列表   -->
+                            <ul class="comment-lists">
+                                <li class="comment-list" data-reply-id="687016" data-isshow="1" v-for="comment in comments">
+                                    <div class="comment-item-top clearfix">
+                                        <div class="top-left">
+                                            <div class="avater">
+                                                <a href="https://me.modian.com/u/detail?uid=5633993">
+                                                    <img v-bind:src="comment.acvtor" onerror="javascript:this.src='https://s.moimg.net/img/web4-0/default_profile@3x.png'" alt="">
+
+                                                </a>
+                                            </div>
+                                            <div class="user-info">
+                                                <p class="nickname">
+                                                    <a href="https://me.modian.com/u/detail?uid=5633993">{{comment.username}}</a>
+                                                    <span class="honor gold_pig_4"></span><span class="honor commenter_3"></span>
+                                                </p>
+                                                <p class="time" >{{comment.create_time}}</p>
+                                            </div>
+                                        </div>
+                                        <div class="top-right" >
+
+                 <span class="comment-replay"   >
+                    <i class="iconfont icon-edit"></i> <i>回复</i>
+                </span>
+                                            <span class="op_list">
+                    <span class="comment-favor " data-post_id="143369" data-favor_uid="5633993" data-favor_count="2" data-reply_id="1128664">
+                        <i class="iconfont icon-like"></i> <i class="favor_count">2</i>
+                    </span>
+                </span>
+                                        </div>
+                                    </div>
+                                    <div class="comment-txt"> {{comment.comment_msg}} </div>
+
+
+
+                                    <!--   二级评论  -->
+                                </li>
+                                <li class="comment-list" data-reply-id="1223262" data-isshow="1">
+                                    <div class="comment-item-top clearfix">
+                                        <div class="top-left">
+                                            <div class="avater">
+                                                <a href="https://me.modian.com/u/detail?uid=1000012642">
+                                                    <img src="https://p.moimg.net/ico/2020/01/10/20200110_1578623603_7928.jpg?imageMogr2/auto-orient/strip" onerror="javascript:this.src='https://s.moimg.net/img/web4-0/default_profile@3x.png'" alt="">
+
+                                                </a>
+                                            </div>
+                                            <div class="user-info">
+                                                <p class="nickname">
+                                                    <a href="https://me.modian.com/u/detail?uid=1000012642">梅家囡囡</a>
+                                                    <span class="honor gold_pig_6"></span><span class="honor commenter_3"></span>
+                                                </p>
+                                                <p class="time">2020-04-30 20:25</p>
+                                            </div>
+                                        </div>
+                                        <div class="top-right">
+
+                     <span class="comment-replay active" data-cur="parent"  style="display: none;">
+                    <i class="iconfont icon-edit"></i> <i>回复</i>
+                </span>
+                                            <span class="op_list">
+
+                    <span class="comment-favor " data-post_id="143312" data-favor_uid="1000012642" data-favor_count="7" data-reply_id="1223262">
+                        <i class="iconfont icon-like"></i> <i class="favor_count">7</i>
+                    </span>
+
+                    <span class="comment-step" data-post_id="143312" data-favor_uid="1000012642" data-favor_count="7" data-reply_id="1223262">
+                        <i class="iconfont icon-dislike"></i>
+                    </span>
+                </span>
+                                        </div>
+                                    </div>
+                                    <div class="comment-txt">
+                                        扩单独放一档行吗？求！
+                                    </div><div class="comment-edit" style="padding-bottom: 0px;">                    <textarea class="comment-input" placeholder="在这里发表你的看法..." style="resize: none; max-height: none; height: 21px;"></textarea>                    <div class="comment-edit-btn">                        <span class="upface"><i class="iconfont icon-expression"></i> <i></i></span>                        <span class="comment-send" data-reply_rid="1223262" data-post_id="143312" data-reply_ruid="1000012642" data-reply_sub_rid="0"><i></i> <i>发送</i></span>                    </div>                </div>
+
+
+                                    <!--   二级评论  -->
+                                    <!--   二级评论  -->
+                                </li>
+
+                                <li class="comment-list" data-reply-id="687016" data-isshow="1" >
+                                    <div class="comment-item-top clearfix">
+                                        <div class="top-left">
+                                            <div class="avater">
+                                                <a href="https://me.modian.com/u/detail?uid=5633993">
+                                                    <img src="https://p.moimg.net/ico/2019/11/07/20191107_1573087110_4695.jpg?imageMogr2/auto-orient/strip" onerror="javascript:this.src='https://s.moimg.net/img/web4-0/default_profile@3x.png'" alt="">
+
+                                                </a>
+                                            </div>
+                                            <div class="user-info">
+                                                <p class="nickname">
+                                                    <a href="https://me.modian.com/u/detail?uid=5633993">Saмurai</a>
+                                                    <span class="honor gold_pig_4"></span><span class="honor commenter_3"></span>
+                                                </p>
+                                                <p class="time">8分钟前</p>
+                                            </div>
+                                        </div>
+                                        <div class="top-right" >
+
+                 <span class="comment-replay"   >
+                    <i class="iconfont icon-edit"> </i> <i>回复</i>
+                </span>
+                                            <span class="op_list">
+                    <span class="comment-favor " data-post_id="143369" data-favor_uid="5633993" data-favor_count="2" data-reply_id="1128664">
+                        <i class="iconfont icon-like"></i> <i class="favor_count">2</i>
+                    </span>
+                </span>
+                                        </div>
+                                    </div>
+                                    <div class="comment-txt"> 值得收藏 </div>
+
+
+                                    <!--   二级评论  -->
+                                    <ul class="sub-comment">
+                                        <li>
+                                            <div class="sub-comment-txt">
+                                                <a href="https://me.modian.com/u/detail?uid=4879418"><span>姚锋</span></a>
+                                                回复
+                                                <a href="https://me.modian.com/u/detail?uid=2168290"><span>化作樱花树守候</span></a>: 是的，手帐本等就1500套 </div>
+                                            <div class="sub-b clearfix">
+                                                <span class="sub-time">今天20:10</span>
+                                                <div class="sub-btn">
+                                                    <span style="display:none"><i class="iconfont icon-report"></i> <i>举报</i></span>
+                                                    <span class="comment-replay" data-cur="child" data-reply_rid="687016" data-reply_ruid="4879418" data-post_id="81405" data-reply_sub_rid="687074"><i class="iconfont icon-edit"></i> <i>回复</i></span>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                    <!--   二级评论  -->
+                                </li>
+                                <li class="comment-list" data-reply-id="686779" data-isshow="1">
+                                    <div class="comment-item-top clearfix">
+                                        <div class="top-left">
+                                            <div class="avater">
+                                                <a href="https://me.modian.com/u/detail?uid=5282484">
+                                                    <img src="https://tva2.sinaimg.cn/crop.0.0.180.180.180/c1bafc91jw1e8qgp5bmzyj2050050aa8.jpg" onerror="javascript:this.src='https://s.moimg.net/img/web4-0/default_profile@3x.png'" alt="">
+
+                                                </a>
+                                            </div>
+                                            <div class="user-info">
+                                                <p class="nickname">
+                                                    <a href="https://me.modian.com/u/detail?uid=5282484">鳯凰星空東風</a>
+
+                                                </p>
+                                                <p class="time">今天15:23</p>
+                                            </div>
+                                        </div>
+                                        <div class="top-right">
+                <span style="display:none">
+                    <i class="iconfont icon-report"></i> <i>举报</i>
+                </span>
+                                            <span class="comment-replay" data-cur="parent" data-reply_rid="686779" data-post_id="81405" data-reply_ruid="5282484">
+                    <i class="iconfont icon-edit"></i> <i>回复</i>
+                </span>
+                                            <span data-post_id="81405" data-favor_uid="5282484" data-favor_count="1" data-reply_id="686779">
+                    <i class="iconfont icon-like"></i> <i class="favor_count">1</i>
+                </span>
+                                        </div>
+                                    </div>
+                                    <div class="comment-txt"> 从@陪你渡过难熬的夜 发的解说版皮克斯立体书开箱看到的！ </div>
+
+
+                                    <!--   二级评论  -->
+                                    <!--   二级评论  -->
+                                </li>
+
+
+                            </ul>
+                        </div>
+
+                    </div>
+
+                    <!--  分页  -->
+                    <div class="pagination common-comment-pagination">
+                        <div class="pagination-wrap"><span class="current prev"><i class="iconfont icon-leftmore"></i></span><span class="current">1</span><a href="#comment">2</a><a href="#comment">3</a><a href="#comment">4</a><a href="#comment">5</a><a href="#comment">6</a><span>...</span><a href="#comment">15</a><a href="#comment" class="next"><i class="iconfont icon-nestmore"></i></a></div>
+                    </div>
+                    <!--    -->
+                </div>
+
+
+
+            </div>
+            <div class="main-right">
+                <div class="risk-prompt">
+                    <h3 class="tit">风险提示</h3>
+                    <p class="first">1. 您参与众筹是支持将创意变为现实的过程，而不是直接的商品交易，因此存在一定风险。请您根据自己的判断选择、支持众筹项目。</p>
+                    <p class="short">
+                        <span>2. 众筹存在于发起人与支持者之间，摩点作为第三方平台，只提供网络空间、技术支持等服务。众筹的回报产品和承诺由发起人提供和作出，摩点不参与和担保众筹... </span>
+                        <a href="javascript:;" class="showall">显示全部<i class="iconfont icon-downmore"></i></a>
+                    </p>
+                    <p class="gt3">2. 众筹存在于发起人与支持者之间，摩点网作为第三方平台，只提供网络空间、技术支持等服务。众筹的回报产品和承诺由发起人提供和作出，摩点网不参与和担保众筹项目的具体运作。</p>
+                    <p class="gt3">3. 众筹项目的回报发放及其他后续服务事项均由发起人负责。如果发生发起人无法发放回报、延迟发放回报、不提供回报后续服务等情形，您需要直接和发起人协商解决，摩点网对此不承担任何责任。</p>
+                    <p class="gt3">
+                        <span>4. 由于发起人能力和经验不足、市场风险、法律风险等各种因素，众筹可能失败。对于在众筹期限届满前失败的项目，您支持项目的款项会全部原路退还给您；对于众筹成功的项目，支持者不能通过摩点平台申请退款，若此时支持者因任何原因希望退款，需直接与发起者协商，若发 起者同意退款，需直接向支持者退回款项，摩点不会从可结算款项中扣除该部分退款金额。您对项目发起人的无偿支持以及额外打赏，一旦众筹成功将不予退款，但众筹失败的情况除外。</span>
+                        <span class="packup-wrap"><a href="javascript:;" class="packup">收起全部<i class="iconfont icon-upmore"></i></a></span>
+                    </p>
+                </div>
+
+
+                <!--回报列表-->
+                <div class="payback-lists margin36">
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <div class="back-list fanchang" id="fanchang">
+                        <h3 class="tit back-title clearfix">
+                            <span>{{item.price}}</span>
+
+                            <em class="count" i="127" reward_list="37426" pro_id="57037">已支持{{crowdfunding.supporttime-crowdfunding.freesupporttime}}次</em>
+
+                        </h3>
+                        <div class="back-content">
+                            <div class="back-sub-title">{{item.crowdfunding.gear.title}}</div>
+                            <div class="back-detail">
+                                {{item.crowdfunding.gear.introduction}}
+                            </div>
+                            <div class="back-img clearfix">
+                                <div class="back-img-item">
+                                    <img class="lazy" v-bind:src="crowdfunding.gear.gearimg"  style="width: 100%; display: block;">
+                                </div>
+                            </div>
+
+                            <div class="btn_field">
+
+                                <a  v-if="item.itemstatus=='上线中'&&item.num>0"  class="back-btn" pro_id="57037" rew_id="37426" money="189" v-bind:href="'/payitem/'+item.id">去支持</a>
+                                <a href="#fanchang" v-else-if="item.itemstatus=='上线中'&&item.num==0"   class="end-btn btn fail-btn"><i class="iconfont icon-right"></i> 售罄</a>
+                                <a v-else  style="background-color: rgb(122, 128, 135);" class="end-btn btn fail-btn"><i class="iconfont icon-star"></i>暂时下架</a>
+
+
+                            </div>
+
+
+                        </div>
+                    </div>
+
+
+
+
+
+
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+
+
+    var minute = 1000 * 60;
+    var hour = minute *60;
+    var day = hour *24;
+    var week = day * 7;
+    var month = day * 30;
+    function getTimer(stringTime){
+        var time1 = new Date().getTime();//当前的时间戳
+        console.log(time1);
+        var time2 = Date.parse(new Date(stringTime));//指定时间的时间戳
+        console.log(time2);
+        var time = time1 - time2;
+
+        var result = null;
+        if(time < 0){
+            alert("设置的时间不能早于当前时间！");
+        }else if(time/month >= 1){
+            result = "发布于" + parseInt(time/month) + "月前！";
+        }else if(time/week >= 1){
+            result = "发布于" + parseInt(time/week) + "周前！";
+        }else if(time/day >= 1){
+            result = "发布于" + parseInt(time/day) + "天前！";
+        }else if(time/hour >= 1){
+            result = "发布于" + parseInt(time/hour) + "小时前！";
+        }else if(time/minute >= 1){
+            result = "发布于" + parseInt(time/minute) + "分钟前！";
+        }else {
+            result = "刚刚发布！";
+        }
+        return  result;
+    }
+
+
+
+
+
+
+    function format(point) {
+        const formated = Number(point*100).toFixed(2);
+        return `${formated}%`
+    }
+
+    function  DateDiff(sDate1, sDate2){    //sDate1和sDate2是2006-12-18格式  
+        var  aDate,  oDate1,  oDate2,  iDays
+        aDate   =  sDate1.split("-")
+        oDate1 = new Date(aDate[0] , aDate[1] ,aDate[2])    //转换为12-18-2006格式  
+        aDate   =  sDate2.split("-")
+        oDate2 = new Date(aDate[0] , aDate[1] , aDate[2])
+
+
+        if (oDate1-oDate2<=0){
+            return 0
+        }else {
+
+
+            iDays   =  parseInt(Math.abs(oDate1  -  oDate2)  /  1000  /  60  /  60  /24)    //把相差的毫秒数转换为天数  
+            return  iDays
+        }
+    }
+
+    function getcurrentDate() {
+        var date=new Date();
+        let year=date.getFullYear()
+        let month=date.getMonth()+1;
+        let  day=date.getDate();
+        if(month>=1&&month<=9)
+            month="0"+month;
+        if (day>=0&&day<=9)
+            day="0"+day
+        return year+"-"+month+"-"+day
+    }
+
+
+
+
+    var app=new Vue({
+        el:"#container",
+        data:{
+            msg:"双击图片,更换头像",
+            usernamemsg:"名称不能修改",
+            emailmsg:"邮箱不能更改",
+            creater_acvtor:"",
+            creater_habitation:"",
+            crowdfunding:{},
+            pargress:0,
+            leftday:"",
+            comments:{},
+            list:{},
+            item:{},
+
+        },
+
+
+
+
+        created(){
+            fetch("/getitembyid",
+
+            )
+                .then(response=>response.json())
+                .then(json=>{
+                    this.item=json["item"];
+                    this.crowdfunding=json["crowdfunding"];
+                    this.creater_acvtor=json["creater_acvtor"];
+                    this.creater_habitation=json["creater_habitation"]
+
+
+
+                    this.pargress=format(  (parseInt(json["item"].price)-parseInt(json["item"].crowdfunding.gear.supportAmount))/parseInt(json["item"].crowdfunding.gear.supportAmount));
+
+                    this.list=json["comments"]
+                    this.list.forEach(item => {
+                        item.create_time=getTimer(item.create_time);//父元素  要改变的元素  改变成为的值
+                    });
+
+                    this.comments=this.list;
+
+                    this.leftday=DateDiff(json["crowdfunding"].end_date,getcurrentDate())
+                    console.log(this.item)
+
+
+
+
+
+                })
+        },
+
+
+        methods:{
+
+
+
+
+
+            edituser:function () {
+                $('#editModal').modal('show')
+            },
+
+            fabiao:function () {
+                var msg=$("#comment-textarea").val();
+                if (msg==""&&msg==null){
+                    layer.msg("请输入评论的内容", {icon: 5});
+                }else {
+                    $.ajax({
+                        url: "/fabiao3",
+                        type: "POST",
+                        data:{"msg":msg},
+                        dataType: "json",
+                        success: function(data){
+
+                            if(data["status"]==1){
+
+
+                                layer.msg(data['msg'], {icon: 6});
+                                setTimeout(window.location.reload(), 3000);
+                            }else{
+                                layer.msg(data['msg'], {icon: 5});
+                            }
+                        }
+
+                    });
+                }
+
+            }
+
+
+
+
+
+        }
+
+
+
+    })
+</script>
+
+</body>
+</html>

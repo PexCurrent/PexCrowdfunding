@@ -88,7 +88,7 @@
 
                 setTimeout("javascript:location.href=url", 1000);
             } else if(obj.event === 'del'){
-                layer.confirm('真的删除行么', function(index){
+                layer.confirm('真的删除该项目么，删除后不可恢复', function(index){
                     $.ajax({
                         url: "UVServlet",
                         type: "POST",

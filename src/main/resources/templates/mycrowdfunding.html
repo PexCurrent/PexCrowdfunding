@@ -37,18 +37,18 @@
 
                     <a class="refund-btn" href="javascript:;"><img src="https://s.moimg.net/new/images/order/arrow_down_20x13.png"></a>
 <!--                    另起一个页面 target="_blank"-->
-                    <a  v-if="crowdfunding.status=='发布中'&&crowdfunding.isbegin==0"  v-bind:href="'/reservation/'+crowdfunding.id" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models"  onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'" ></a>
+                    <a  v-if="crowdfunding.status=='发布中'&&crowdfunding.isbegin==0"  v-bind:href="'/reservation/'+crowdfunding.gear.cid" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models"  onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'" ></a>
                     <a v-else-if="crowdfunding.status=='审核中'" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models"  onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'" ></a>
-                    <a v-else  v-bind:href="'/Crowdfunding/'+crowdfunding.id" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models"  onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'" ></a>
+                    <a v-else  v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models"  onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'" ></a>
 
 
                     <div class="middle_part fl">
-                        <p v-if="crowdfunding.status=='发布中'&&crowdfunding.isbegin==0" class="inner1"><a v-bind:href="'/reservation/'+crowdfunding.id" >{{crowdfunding.title}}</a></p>
+                        <p v-if="crowdfunding.status=='发布中'&&crowdfunding.isbegin==0" class="inner1"><a v-bind:href="'/reservation/'+crowdfunding.gear.cid" >{{crowdfunding.title}}</a></p>
                         <p v-else-if="crowdfunding.status=='审核中'" class="inner1"><a  >{{crowdfunding.title}}</a></p>
 
-                        <p v-else class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.id" >{{crowdfunding.title}}</a></p>
+                        <p v-else class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" >{{crowdfunding.title}}</a></p>
 
-                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.id">项目详情</a>
+                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid">项目详情</a>
                         </p>
                         <p class="inner3">
                             目标金额：<span>￥{{crowdfunding.targetamount}}</span>               </p>
@@ -62,12 +62,14 @@
                         </div>
                         <div class="bottom_btn  several" style="width: 331px">
 
-                            <a title="通关众筹者填写的邮箱通知消息" v-on:click="notify(crowdfunding.id)">通知</a>
-                            <a v-if="crowdfunding.status=='成功'" v-on:click="sentitem(crowdfunding.id)">发货</a>
-                            <a v-if="crowdfunding.status=='失败'" v-on:click="refundall(crowdfunding.id)">全部退款</a>
-                            <a v-if="crowdfunding.status=='已发货'" v-bind:href="'/manageexpress/'+crowdfunding.id">更新快递</a>
-                            <a v-if="crowdfunding.status=='已退款'"  >已退款</a>
+                            <a v-if="crowdfunding.status!='审核'" title="通关众筹者填写的邮箱通知消息" v-on:click="notify(crowdfunding.gear.cid)">通知</a>
+                            <a v-if="crowdfunding.status=='成功'"   v-on:click="sentitem(crowdfunding.gear.cid)">发货</a>
+                            <a v-if="crowdfunding.status=='失败'" v-on:click="refundall(crowdfunding.gear.cid)">全部退款</a>
+                            <a v-if="crowdfunding.status=='已发货'" v-bind:href="'/manageexpress/'+crowdfunding.gear.cid">更新快递</a>
+                            <a v-if="crowdfunding.status=='已发货'"  class="edit_remark"  remark_info=""  v-on:click="itemmessage(crowdfunding.gear.cid,crowdfunding.gear.supportAmount)">上架</a>
 
+                            <a v-if="crowdfunding.status=='已退款'"  >已退款</a>
+                            <a v-if="crowdfunding.status=='审核'"  class="edit_remark"  remark_info="" v-on:click="del(crowdfunding.gear.cid)">删除项目</a>
 
                         </div>
                     </div>
@@ -93,20 +95,20 @@
 
                     <a class="refund-btn" href="javascript:;"><img src="https://s.moimg.net/new/images/order/arrow_down_20x13.png"></a>
                     <!--                    另起一个页面 target="_blank"-->
-                    <a  v-if="crowdfunding.status=='发布中'&&crowdfunding.isbegin==0"  v-bind:href="'/reservation/'+crowdfunding.id" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models"  onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'" ></a>
+                    <a  v-if="crowdfunding.status=='发布中'&&crowdfunding.isbegin==0"  v-bind:href="'/reservation/'+crowdfunding.gear.cid" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models"  onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'" ></a>
                     <a v-else-if="crowdfunding.status=='审核中'" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models"  onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'" ></a>
-                    <a v-else  v-bind:href="'/Crowdfunding/'+crowdfunding.id" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models"  onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'" ></a>
+                    <a v-else  v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models"  onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'" ></a>
 
 
 
                     <div class="middle_part fl">
-                        <p v-if="crowdfunding.status=='发布中'&&crowdfunding.isbegin==0" class="inner1"><a v-bind:href="'/reservation/'+crowdfunding.id" >{{crowdfunding.title}}</a></p>
+                        <p v-if="crowdfunding.status=='发布中'&&crowdfunding.isbegin==0" class="inner1"><a v-bind:href="'/reservation/'+crowdfunding.gear.cid" >{{crowdfunding.title}}</a></p>
                         <p v-else-if="crowdfunding.status=='审核中'" class="inner1"><a  >{{crowdfunding.title}}</a></p>
-                        <p v-else class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.id" >{{crowdfunding.title}}</a></p>
+                        <p v-else class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" >{{crowdfunding.title}}</a></p>
 
 
 
-                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.id">项目详情</a>
+                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid">项目详情</a>
                         </p>
                         <p class="inner3">
                             目标金额：<span>￥{{crowdfunding.targetamount}}</span>               </p>
@@ -121,12 +123,15 @@
                         <div class="bottom_btn  several" style="width: 331px">
 
 
+                            <a v-if="crowdfunding.status!='审核'" title="通关众筹者填写的邮箱通知消息" v-on:click="notify(crowdfunding.gear.cid)">通知</a>
+                            <a v-if="crowdfunding.status=='成功'"   v-on:click="sentitem(crowdfunding.gear.cid)">发货</a>
+                            <a v-if="crowdfunding.status=='失败'" v-on:click="refundall(crowdfunding.gear.cid)">全部退款</a>
+                            <a v-if="crowdfunding.status=='已发货'" v-bind:href="'/manageexpress/'+crowdfunding.gear.cid">更新快递</a>
+                            <a v-if="crowdfunding.status=='已发货'"  class="edit_remark"  remark_info=""  v-on:click="itemmessage(crowdfunding.gear.cid,crowdfunding.gear.supportAmount)">上架</a>
 
-                            <a class="edit_remark"  remark_info="" href="http://39.96.6.181/mycrowdfunding/edit/84">更新</a>
+                            <a v-if="crowdfunding.status=='已退款'"  >已退款</a>
+                            <a v-if="crowdfunding.status=='审核'"  class="edit_remark"  remark_info="" v-on:click="del(crowdfunding.gear.cid)">删除项目</a>
 
-
-
-                            <a href="" >已发货</a>
 
 
 
@@ -153,10 +158,10 @@
 
                     <a class="refund-btn" href="javascript:;"><img src="https://s.moimg.net/new/images/order/arrow_down_20x13.png"></a>
                     <!--                    另起一个页面 target="_blank"-->
-                    <a v-bind:href="'/Crowdfunding/'+crowdfunding.id" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                    <a v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
                     <div class="middle_part fl">
-                        <p class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.id" >{{crowdfunding.title}}</a></p>
-                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.id">项目详情</a>
+                        <p class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" >{{crowdfunding.title}}</a></p>
+                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid">项目详情</a>
                         </p>
                         <p class="inner3">
                             目标金额：<span>￥{{crowdfunding.targetamount}}</span>               </p>
@@ -172,11 +177,20 @@
 
 
 
-                            <a class="edit_remark"  remark_info="" href="http://39.96.6.181/mycrowdfunding/edit/84">更新</a>
+
+                            <a v-if="crowdfunding.status!='审核'" title="通关众筹者填写的邮箱通知消息" v-on:click="notify(crowdfunding.gear.cid)">通知</a>
+                            <a v-if="crowdfunding.status=='成功'"   v-on:click="sentitem(crowdfunding.gear.cid)">发货</a>
+                            <a v-if="crowdfunding.status=='失败'" v-on:click="refundall(crowdfunding.gear.cid)">全部退款</a>
+                            <a v-if="crowdfunding.status=='已发货'" v-bind:href="'/manageexpress/'+crowdfunding.gear.cid">更新快递</a>
+                            <a v-if="crowdfunding.status=='已发货'"  class="edit_remark"  remark_info=""  v-on:click="itemmessage(crowdfunding.gear.cid,crowdfunding.gear.supportAmount)">上架</a>
+
+                            <a v-if="crowdfunding.status=='已退款'"  >已退款</a>
+                            <a v-if="crowdfunding.status=='审核'"  class="edit_remark"  remark_info="" v-on:click="del(crowdfunding.gear.cid)">删除项目</a>
 
 
 
-                            <a href="" >已发货</a>
+
+
 
 
 
@@ -203,10 +217,10 @@
 
                     <a class="refund-btn" href="javascript:;"><img src="https://s.moimg.net/new/images/order/arrow_down_20x13.png"></a>
                     <!--                    另起一个页面 target="_blank"-->
-                    <a v-bind:href="'/Crowdfunding/'+crowdfunding.id" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                    <a v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
                     <div class="middle_part fl">
-                        <p class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.id" >{{crowdfunding.title}}</a></p>
-                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.id">项目详情</a>
+                        <p class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" >{{crowdfunding.title}}</a></p>
+                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid">项目详情</a>
                         </p>
                         <p class="inner3">
                             目标金额：<span>￥{{crowdfunding.targetamount}}</span>               </p>
@@ -220,14 +234,14 @@
                         </div>
                         <div class="bottom_btn  several" style="width: 331px">
 
+                            <a v-if="crowdfunding.status!='审核'" title="通关众筹者填写的邮箱通知消息" v-on:click="notify(crowdfunding.gear.cid)">通知</a>
+                            <a v-if="crowdfunding.status=='成功'"   v-on:click="sentitem(crowdfunding.gear.cid)">发货</a>
+                            <a v-if="crowdfunding.status=='失败'" v-on:click="refundall(crowdfunding.gear.cid)">全部退款</a>
+                            <a v-if="crowdfunding.status=='已发货'" v-bind:href="'/manageexpress/'+crowdfunding.gear.cid">更新快递</a>
+                            <a v-if="crowdfunding.status=='已发货'"  class="edit_remark"  remark_info=""  v-on:click="itemmessage(crowdfunding.gear.cid,crowdfunding.gear.supportAmount)">上架</a>
 
-
-                            <a class="edit_remark"  remark_info="" href="http://39.96.6.181/mycrowdfunding/edit/84">更新</a>
-
-
-
-                            <a href="" >已发货</a>
-
+                            <a v-if="crowdfunding.status=='已退款'"  >已退款</a>
+                            <a v-if="crowdfunding.status=='审核'"  class="edit_remark"  remark_info="" v-on:click="del(crowdfunding.gear.cid)">删除项目</a>
 
 
                         </div>
@@ -253,10 +267,10 @@
 
                     <a class="refund-btn" href="javascript:;"><img src="https://s.moimg.net/new/images/order/arrow_down_20x13.png"></a>
                     <!--                    另起一个页面 target="_blank"-->
-                    <a v-bind:href="'/Crowdfunding/'+crowdfunding.id" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                    <a v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
                     <div class="middle_part fl">
-                        <p class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.id" >{{crowdfunding.title}}</a></p>
-                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.id">项目详情</a>
+                        <p class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" >{{crowdfunding.title}}</a></p>
+                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid">项目详情</a>
                         </p>
                         <p class="inner3">
                             目标金额：<span>￥{{crowdfunding.targetamount}}</span>               </p>
@@ -269,14 +283,14 @@
                             <p>{{crowdfunding.status}}</p>
                         </div>
                         <div class="bottom_btn  several" style="width: 331px">
+                            <a v-if="crowdfunding.status!='审核'" title="通关众筹者填写的邮箱通知消息" v-on:click="notify(crowdfunding.gear.cid)">通知</a>
+                            <a v-if="crowdfunding.status=='成功'"   v-on:click="sentitem(crowdfunding.gear.cid)">发货</a>
+                            <a v-if="crowdfunding.status=='失败'" v-on:click="refundall(crowdfunding.gear.cid)">全部退款</a>
+                            <a v-if="crowdfunding.status=='已发货'" v-bind:href="'/manageexpress/'+crowdfunding.gear.cid">更新快递</a>
+                            <a v-if="crowdfunding.status=='已发货'"  class="edit_remark"  remark_info=""  v-on:click="itemmessage(crowdfunding.gear.cid,crowdfunding.gear.supportAmount)">上架</a>
 
-
-
-                            <a class="edit_remark"  remark_info="" href="http://39.96.6.181/mycrowdfunding/edit/84">更新</a>
-
-
-
-                            <a href="" >已发货</a>
+                            <a v-if="crowdfunding.status=='已退款'"  >已退款</a>
+                            <a v-if="crowdfunding.status=='审核'"  class="edit_remark"  remark_info="" v-on:click="del(crowdfunding.gear.cid)">删除项目</a>
 
 
 
@@ -303,10 +317,10 @@
 
                     <a class="refund-btn" href="javascript:;"><img src="https://s.moimg.net/new/images/order/arrow_down_20x13.png"></a>
                     <!--                    另起一个页面 target="_blank"-->
-                    <a v-bind:href="'/Crowdfunding/'+crowdfunding.id" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                    <a v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
                     <div class="middle_part fl">
-                        <p class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.id" >{{crowdfunding.title}}</a></p>
-                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.id">项目详情</a>
+                        <p class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" >{{crowdfunding.title}}</a></p>
+                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid">项目详情</a>
                         </p>
                         <p class="inner3">
                             目标金额：<span>￥{{crowdfunding.targetamount}}</span>               </p>
@@ -320,15 +334,14 @@
                         </div>
                         <div class="bottom_btn  several" style="width: 331px">
 
+                            <a v-if="crowdfunding.status!='审核'" title="通关众筹者填写的邮箱通知消息" v-on:click="notify(crowdfunding.gear.cid)">通知</a>
+                            <a v-if="crowdfunding.status=='成功'"   v-on:click="sentitem(crowdfunding.gear.cid)">发货</a>
+                            <a v-if="crowdfunding.status=='失败'" v-on:click="refundall(crowdfunding.gear.cid)">全部退款</a>
+                            <a v-if="crowdfunding.status=='已发货'" v-bind:href="'/manageexpress/'+crowdfunding.gear.cid">更新快递</a>
+                            <a v-if="crowdfunding.status=='已发货'"  class="edit_remark"  remark_info=""  v-on:click="itemmessage(crowdfunding.gear.cid,crowdfunding.gear.supportAmount)">上架</a>
 
-
-                            <a class="edit_remark"  remark_info="" href="http://39.96.6.181/mycrowdfunding/edit/84">更新</a>
-
-
-
-                            <a href="" >已发货</a>
-
-
+                            <a v-if="crowdfunding.status=='已退款'"  >已退款</a>
+                            <a v-if="crowdfunding.status=='审核'"  class="edit_remark"  remark_info="" v-on:click="del(crowdfunding.gear.cid)">删除项目</a>
 
                         </div>
                     </div>
@@ -353,10 +366,10 @@
 
                     <a class="refund-btn" href="javascript:;"><img src="https://s.moimg.net/new/images/order/arrow_down_20x13.png"></a>
                     <!--                    另起一个页面 target="_blank"-->
-                    <a v-bind:href="'/Crowdfunding/'+crowdfunding.id" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                    <a v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" ><img class="front_img fl"  v-bind:src="'http://127.0.0.1:8800/'+crowdfunding.showpic"  alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
                     <div class="middle_part fl">
-                        <p class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.id" >{{crowdfunding.title}}</a></p>
-                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.id">项目详情</a>
+                        <p class="inner1"><a v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid" >{{crowdfunding.title}}</a></p>
+                        <p class="inner2">类型：<span>出版</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/Crowdfunding/'+crowdfunding.gear.cid">项目详情</a>
                         </p>
                         <p class="inner3">
                             目标金额：<span>￥{{crowdfunding.targetamount}}</span>               </p>
@@ -369,16 +382,14 @@
                             <p>{{crowdfunding.status}}</p>
                         </div>
                         <div class="bottom_btn  several" style="width: 331px">
+                            <a v-if="crowdfunding.status!='审核'" title="通关众筹者填写的邮箱通知消息" v-on:click="notify(crowdfunding.gear.cid)">通知</a>
+                            <a v-if="crowdfunding.status=='成功'"   v-on:click="sentitem(crowdfunding.gear.cid)">发货</a>
+                            <a v-if="crowdfunding.status=='失败'" v-on:click="refundall(crowdfunding.gear.cid)">全部退款</a>
+                            <a v-if="crowdfunding.status=='已发货'" v-bind:href="'/manageexpress/'+crowdfunding.gear.cid">更新快递</a>
+                            <a v-if="crowdfunding.status=='已发货'"  class="edit_remark"  remark_info=""  v-on:click="itemmessage(crowdfunding.gear.cid,crowdfunding.gear.supportAmount)">上架</a>
 
-
-
-                            <a class="edit_remark"  remark_info="" href="http://39.96.6.181/mycrowdfunding/edit/84">更新</a>
-
-
-
-                            <a href="" >已发货</a>
-
-
+                            <a v-if="crowdfunding.status=='已退款'"  >已退款</a>
+                            <a v-if="crowdfunding.status=='审核'"  class="edit_remark"  remark_info="" v-on:click="del(crowdfunding.gear.cid)">删除项目</a>
 
                         </div>
                     </div>
@@ -420,6 +431,37 @@
 
             </div>
         </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="itemmessage">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">信息</h4>
+                </div>
+                <div class="modal-body">
+
+                    <input type="hidden" name="csrfmiddlewaretoken" value="GXhKc6xTUZLdLk4QpzAswByIqQnfIA76K759iPsIRfq9Vvjxu9XFHJxBhsZW0Toa">
+                    <div class="form-group">
+                        <label>规定价格</label>
+                        <input type="text" class="form-control" name="cid" id="cid" style="display: none">
+                        <input type="text" class="form-control" name="oldprice" id="oldprice" style="display: none">
+                        <input type="text" name="price" id="price" class="form-control" maxlength="20" required placeholder="价格不能比众筹是价格少" onkeyup="value=value.replace(/[^\d]/g,'')">
+                    </div>
+                    <div class="form-group">
+                        <label>库存数量</label>
+                        <input type="text" name="num" id="num" class="form-control" maxlength="20" required  placeholder="如果限量输入库存数" onkeyup="value=value.replace(/[^\d]/g,'')">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary" v-on:click="shangjia()" >提交</button>
+                    </div>
+
+                </div>
+            </div>
+            </div>
     </div>
 </div>
 
@@ -536,6 +578,7 @@
             failcrowdfundings:{},
             competedcrowdfundings:{},
             refundcrowdfundings:{},
+
         },
         //在实例被创建之后被调用
         created: function () {
@@ -593,6 +636,7 @@
 
 
             sentitem:function(index){
+
               var cid=parseInt(index);
                 $.ajax({
                     url: "/sentitem",
@@ -601,11 +645,14 @@
                     dataType: "json",
                     success: function(data){
 
+
                         if(data["status"]==1){
 
 
-                            layer.msg("你已成功将通知发送给支持者", {icon: 6});
-                            setTimeout(window.location.reload(), 6000);
+                            layer.msg("你已成功将通知发送给支持者,请稍后填写快递", {icon: 6});
+                            // setTimeout(window.location.reload(), 3000);
+                            // var href="location.href='manageexpress/"+cid+"'"
+                            setTimeout("javascript:location.href='manageexpress/"+cid+"'", 3000);
                         }else{
                             layer.msg("发送失败，请稍后在试", {icon: 5});
                         }
@@ -643,12 +690,54 @@
 
             },
 
+            shangjia:function(){
+                var cid=$("#cid").val()
+                var oldprice=$("#oldprice").val()
+                var price=$("#price").val()
+                var num=$("#num").val();
+                if (price==null||price === ""){
+                    layer.msg("请输入上架价格", {icon: 5});
+                }else if (num==null||num===""){
+                    layer.msg("请填写库存数量", {icon: 5});
+                }
+                else if (parseInt(oldprice)>=parseInt(price)){
+                    layer.msg("会了保护众筹者的权益，上架价格不得低于众筹档位额", {icon: 5});
+                }else{
+                    $.ajax({
+                        url: "shangjia",
+                        type: "POST",
+                        data:{"cid":cid,"price":price,"num":num},
+                        dataType: "json",
+                        success: function(data){
+
+                            if(data['status']==1){
+
+                                layer.msg("你已成功上架商品，请等待管理员审核", {icon: 6});
+                                setTimeout(window.location.reload(), 3000);
+                            }else if (data['status']==0){
+                                layer.msg("商品你已上架，请不要重复上架", {icon: 5});
+                            }else{
+                                layer.msg("系统繁忙，请稍后再试", {icon: 5});
+                            }
+                        }
+
+                    });
+                }
+            },
+
+
             notify:function(index){
                 $('#id1').val(index)
                 $('#notifyModal').modal('show');
 
 
 
+            },
+
+            itemmessage:function(cid,oldprice) {
+                $('#cid').val(cid)
+                $('#oldprice').val(oldprice);
+                $('#itemmessage').modal('show');
             },
             // 获取需要渲染到页面中的数据
             getShowData:function(arr) {
@@ -712,8 +801,26 @@
             },
             //删除
             del: function (index) {
-                this.tableDatas.splice(index, 1);
-                this.getShowData(this.tableDatas);
+                layer.confirm('真的删除该项目么，删除后不可恢复', function(index){
+                    $.ajax({
+                        url: "UVServlet",
+                        type: "POST",
+                        data:{"uvid":index},
+                        dataType: "json",
+                        success: function(data){
+
+                            if(data.status==0){
+                                layer.msg("删除成功", {icon: 6});
+                                setTimeout(window.location.reload(), 3000);
+                            }else{
+                                layer.msg("删除失败", {icon: 5});
+                                setTimeout(window.location.reload(), 3000);
+                            }
+                        }
+
+                    });
+
+                });
             },
             //查询
             searchFn:function (e) {

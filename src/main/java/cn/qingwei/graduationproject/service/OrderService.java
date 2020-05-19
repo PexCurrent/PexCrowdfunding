@@ -23,4 +23,9 @@ public interface OrderService {
     List<Order> getallingorderbycid(int cid);
     List<Order> getallingorderbycidandsearch(int cid,String search);
     Integer updateexpress_id(String express_id,String oId);
+    List<Order> getallorder();
+    List<Order> getallorderbyoid(String oId);
+
+
+
 }

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!--<head th:include="nav::head">-->
+<head th:replace="nav::head(~{::title},~{::link},~{::script})">
+    <title>注册</title>
+    <link rel="stylesheet" href="/css/support_gear.css">
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/distpicker.data.js"></script>
+    <script src="/js/distpicker.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+</head>
+<body>
+<script th:replace="nav::logoout"></script>
+<nav th:replace="nav::topbar"></nav>
+<div class="container" id="container">
+    <div class="npay_module">
+        <form action="/alipay/goitempay" method="get" id="pay-form" name="payment"  accept-charset="UTF-8">
+
+            <input type="hidden" name="csrfmiddlewaretoken" value="IJ0YbvRpjvwzR7MIR24yfTyrtptqd7KiMTOnheMegLbv1i1pWCrLq1xkk157vq1m">
+
+            <input type="hidden" id="gearid"  value=38 name="gearid" />
+            <input type="hidden" id="rid" name="rid" value=""/>
+            <input type="hidden" id="money" name="money" value="0"/>
+            <input type="hidden" id="total" name="total" value=""/>
+            <!--填写收货地址-->
+
+            <!--            <input name="shopping_address" type="text"  id="shopping_address" value="ture">-->
+
+            <div class="new_paywarp">
+                <div class="shopping_addrress">
+                    <p class="address_title">填写收货地址：</p>
+                    <div class="jisong">寄送至</div>
+
+
+
+                    <div class="add_address" style="display:none" >添加收货地址</div>
+                    <span class="change_address fr"   onclick="addnewaddress()">选择其他地址</span>
+                    <div class="js_address_field" >
+                        <div class="js_add_chosen" >
+                            <div v-if="defaultaddress!=null">
+                                <span class="js_name" style="margin-left: 30px">{{defaultaddress.theme}}</span><span class="js_address">{{ defaultaddress.province }} {{ defaultaddress.city }} {{ defaultaddress.district }}{{defaultaddress.place }}</span><span class="js_call">{{defaultaddress.mobile}}</span>
+                            </div>
+
+
+                        </div>
+
+
+                        <div class="address_modify" id="address_modify" >
+                            <div class="address_book">
+                                <div class="custom-radio">
+
+
+                                    <div   class="custom-radio-label clearfix" v-for="address in addresses">
+
+                                        <span class="custom-icon-fl"></span>
+                                        <span class="address_book_info address_name">{{address.theme}}</span>
+                                        <span class="address_book_info address_add">{{ address.province }} {{ address.city }} {{ address.district }}{{ address.place }}</span>
+                                        <span class="address_book_info address_call">{{address.mobile}}</span>
+
+                                        <a v-bind:href="'/payitem/setdefaultaddress/'+address.id"  class="dele fr">选择此地址</a>
+                                        <a v-on:click="del(address.id,$event)"  class="dele fr">删除</a>
+                                        <a v-on:click="edit(address.id)"  class="edit fr">编辑</a>
+                                    </div>
+
+
+
+
+
+                                </div>
+                            </div>
+
+                            <a class="new-add-btn address_opertion add_new" href="javascript:;" v-on:click="add()">添加新地址</a>
+                        </div>
+                    </div>
+                    <div style="height:0;clear:both;"></div>
+                    <input type="hidden" name="address_id" id="address_id" value="" class="validate[required]"/>
+                </div>
+            </div>
+
+
+
+
+
+
+            <!--确认订单信息-->
+            <div class="new_paywarp">
+                <div class="edit_order_info">
+                    <div class="order_info_fl">
+                        <p class="address_title">确认订单信息：</p>
+                        <div class="order_fl_list order-money"
+                             data-money="0">
+                            <div class="fl">回报档</div>
+                            <div class="fr">
+                                ￥{{item.price}} {{item.crowdfunding.gear.title}}
+                            </div>
+                        </div>
+                        <div class="order_fl_list extra-pay">
+                            <div class="fl">打赏</div>
+                            <div class="fr">
+                                <div class="input">
+                                    <input type="text" name="added_money" value="0" id="added_money" placeholder="¥0 您可以输入更多金额"  onkeyup=value=value.replace(/[^\d]/g,''),changemoney(); />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="order_fl_list remark">
+                            <div class="fl">留言</div>
+                            <!--                            <div class="fl">留言</div>-->
+                            <div class="fr">
+                                <div class="input">
+                                    <input type="text" name="support_description" id="support_description" placeholder="请输入特殊要求" value=" "  />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="order_info_fr">
+                        <div>
+                            <p >￥<span id="finalmoney">{{item.price}} </span>.00</p>
+                            <p>实际支付金额</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--选择支付方式-->
+            <div class="new_paywarp">
+                <div class="new_paytype">
+                    <div class="paycate">
+                        <div class="chose_paytype fl">选择支付方式：</div>
+                        <div class="pay_type_list fl">
+
+                            <label>
+                                <span class="pay_chosebtn" style="background-position: -30px -76px"></span>
+                                <span class="zhifubaoimg"></span>
+                                <input id="alipay" type="radio" name="pay" value="alipay">
+                            </label>
+                            <input type="hidden" id="client_ip" value=''/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 风险提示 -->
+            <div class="new_paywarp">
+                <div class="risk-warning">
+                    <div class="fr">
+                        <p>1. 点击“提交订单”，即表明您已阅读并同意<a target="_blank" href="https://zhongchou.modian.com/about/index/3/3.html?_mpos=h_foot_aboutus">《支持者协议》</a>及<a href="https://zhongchou.modian.com/about/index/3/4.html?_mpos=h_foot_aboutus" target="_blank">《隐私权政策》</a>，并自愿承担众筹相应风险。</p>
+                        <p>2. 摩点网提请您注意，参与众筹是支持将创意变为现实的过程，而非直接购买一件现成的商品，风险是不可避免的。众筹的回报产品和承诺由众筹发起人提供和作出，摩点网不参与和担保众筹项目的具体运作。</p>
+                    </div>
+                    <div class="fl">免责协议：</div>
+                </div>
+            </div>
+            <!--footer-->
+            <div class="npay-placeholder" ></div>
+            <div class="npay-submit order-pay">
+                <div class="new_paywid">
+                    <!--                    v-bind:href="'/pay/'+crowdfunding.id"-->
+                    <input type="submit" id="sumbitorder"     v-bind:value="'提交订单 ¥'+item.price" class="backbtn"    onclick="return exist();">
+                    <span class="edit_color_txt edit_margleft">请在下单后10分钟内支付，过期将失效</span>
+                </div>
+            </div>
+        </form></div></div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="addModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">信息</h4>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" method="post" action="/payitem/insertaddress">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="IJ0YbvRpjvwzR7MIR24yfTyrtptqd7KiMTOnheMegLbv1i1pWCrLq1xkk157vq1m">
+                    <div class="form-group">
+                        <label>地址名称(如家/公司)</label>
+                        <input type="text" name="theme" class="form-control" maxlength="20" id="title1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>收货人</label>
+                        <input type="text" name="receiver" class="form-control" maxlength="20" id="receiver1" required>
+                    </div>
+                    <div data-toggle="distpicker">
+                        <div class="form-group" >
+                            <label>所在地址</label>
+                            <div class="form-inline">
+                                <select name="province" class="form-control" id="province1" maxlength="20">
+                                </select>
+                                <select name="city" class="form-control" id="city1" maxlength="20">
+                                </select>
+                                <select name="district" class="form-control" id="district1" maxlength="20">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>详细地址</label>
+                        <input type="text" name="place" class="form-control" maxlength="50" id="place1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>联系电话</label>
+                        <input type="text" name="mobile" class="form-control" maxlength="11" id="mobile1" required>
+                    </div>
+
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary" v-on:click="addSubForm()">提交</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="editModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">信息</h4>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" method="post" action="/payitem/updateaddress">
+                    <input type="hidden" name="csrfmiddlewaretoken" value="IJ0YbvRpjvwzR7MIR24yfTyrtptqd7KiMTOnheMegLbv1i1pWCrLq1xkk157vq1m">
+                    <div class="form-group">
+                        <label>地址名称(如家/公司)</label>
+                        <input type="text" class="form-control" name="uid" id="id2" style="display: none">
+                        <input type="text" name="theme" class="form-control" maxlength="20" id="title2" required>
+                        <input hidden="hidden" type="text"  name="id" id="addressid">
+                    </div>
+
+                    <div class="form-group">
+                        <label>收货人</label>
+                        <input type="text" name="receiver" class="form-control" maxlength="20" id="receiver2" required>
+
+                    </div>
+                    <div data-toggle="distpicker">
+                        <div class="form-group" >
+                            <label>所在地址</label>
+                            <div class="form-inline">
+                                <select name="province" class="form-control" id="province2" maxlength="20">
+                                </select>
+                                <select name="city" class="form-control" id="city2" maxlength="20">
+                                </select>
+                                <select name="district" class=" form-control " id="district2" maxlength="20">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>详细地址</label>
+
+                        <input type="text" name="place" class="form-control" maxlength="50" id="place2" required>
+                    </div>
+                    <div class="form-group">
+                        <label>联系电话</label>
+                        <input type="text" name="mobile" class="form-control" maxlength="11" id="mobile2" required>
+                    </div>
+
+
+                    <div class="modal-footer">
+                        <a><button type="button" class="btn btn-default" data-dismiss="modal">取消</button></a>
+                        <button type="submit" class="btn btn-primary" v-on:click="addSubForm">提交</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+</body>
+
+<script>
+
+
+    var totalsum;
+    var isaddress=false;
+    var app=new Vue({
+
+        el:"#container",
+        data:{
+
+            addresses:[],
+            crowdfunding:{},
+            defaultaddress:{},
+            item:{},
+        },
+        //在实例被创建之后被调用
+
+        created(){
+
+            fetch("/getpayitem",
+
+            )
+                .then(response=>response.json())
+                .then(json=>{
+                    console.log(json["item"])
+                    totalsum=json["item"].price;
+                    console.log(json["defaultaddress"]);
+                    console.log(json["addresses"]);
+                    this.item=json["item"];
+                    this.addresses=json["addresses"];
+                    this.defaultaddress=json["defaultaddress"];
+                    if (this.defaultaddress!=null){
+                        isaddress=true;
+                    }
+
+
+                    console.log("____");
+                })
+        },
+        methods: {
+            // 获取需要渲染到页面中的数据
+
+            getShowData:function(arr) {
+                this.cloneTableDatas = JSON.parse(JSON.stringify(arr));
+            },
+            //新增
+            add: function () {
+                $('#addModal').modal('show');
+            },
+            //提交新增
+            addSubForm:function(){
+                $('#addModal').modal('hide');
+            },
+            //编辑
+            edit: function (index) {
+                console.log(index);
+                $.ajax("/payitem/getedit/",{
+                        type:"post",
+                        dataType:"json",
+                        data: {"id":index},
+                        contentType:"application/x-www-form-urlencoded",
+                        success:function (data) {
+                            // layer.msg('注册成功 请及时使用邮箱激活账户',{icon:1,zIndex:layer.zIndex+100});
+                            // // window.setTimeout("window.location='http://localhost:81/user/login'",2000);
+                            // setTimeout("javascript:location.href='http://localhost:81/user/login'", 2000);
+                            // // $('#warm').removeClass("hide");
+                            // // $("#warm").html(result)
+                            console.log(data);
+
+                            var receiver=data['receiver'];
+                            var id=data['id'];
+                            var province=data['province'];
+                            var place=data['place'];
+                            var  mobile=data['mobile'];
+                            var title=data['theme'];
+                            var district=data['district'];
+                            var city=data['city'];
+
+                            $("#receiver2").val(receiver);
+                            $("#addressid").val(index);
+                            $("#province2").val(province);
+                            $("#place2").val(place);
+                            $("#title2").val(title);
+                            $("district2").val(district);
+                            $("city2").val(city);
+                            $("#mobile2").val(mobile);
+                        },
+                        error:function () {
+                            layer.msg('未知错误',{icon:2,zIndex:layer.zIndex+100});
+
+                        }
+                    }
+
+                );
+
+
+
+                $('#editModal').modal('show');
+                this.selected = index;
+                this.selectedlist = JSON.parse(JSON.stringify(this.tableDatas))[index];
+            },
+            //提交编辑
+            editSubForm:function() {
+                Vue.set(this.tableDatas, this.selected, this.selectedlist);
+                this.getShowData(this.tableDatas);
+                $('#editModal').modal('hide');
+            },
+            //删除
+            del: function (index,e) {
+                console.log(index)
+                $.ajax("deladdress/"+index,{
+                        type:"post",
+                        dataType:"json",
+                        data: {"id":index},
+                        contentType:"application/x-www-form-urlencoded",
+                        success:function (data) {
+
+                            layer.msg('成功删除',{icon:1,zIndex:layer.zIndex+100});
+                            location.reload(true)
+
+
+
+
+
+
+
+                        },
+                        error:function () {
+                            layer.msg('未知错误',{icon:2,zIndex:layer.zIndex+100});
+
+                        }
+                    }
+
+                );
+
+
+            },
+            //查询
+            searchFn:function (e) {
+                var key=e.target.value;
+                //查询firstName列
+                if(key){
+                    var searchArray=[];
+                    this.tableDatas.forEach(function (item) {
+                        if(item.firstName.indexOf(key)>-1){
+                            searchArray.push(item);
+                        }
+                    });
+                    this.getShowData(searchArray);
+                }else{
+                    this.getShowData(this.tableDatas);
+                }
+            }
+
+
+        }
+    })
+    if($('#addModal').is(':hidden')){　　//如果node是隐藏的则显示node元素，否则隐藏
+        $("#title1").val("")
+        $("#receiver1").val("")
+        $("#province1").val("")
+        $("#city1").val("")
+        $("#district1").val("")
+        $("#place1").val("")
+        $("#mobile1").val("")
+
+
+
+    }
+
+
+
+
+    function changemoney() {
+
+        var money=Number(document.getElementById("added_money").value)+Number(totalsum);
+        $("#finalmoney").html(money)
+        $("#sumbitorder").val("提交订单 ¥"+money+".00")
+
+    }
+
+
+    function addnewaddress() {
+        $("#address_modify").show()
+    }
+
+    function exist() {
+        if (isaddress==false){
+
+
+            layer.msg('请选择地址',{icon:5,zIndex:layer.zIndex+100});
+            return false;
+
+        }else {
+            return  true;
+        }
+
+
+    }
+
+
+</script>
+<style>
+    .zhifubaoimg {
+        display: inline-block;
+        width: 80px;
+        height: 24px;
+        background: url("/img/6.png") no-repeat;
+        background-position: 0px -5px;
+        padding: 1px 0;
+    }
+</style>
+</html>

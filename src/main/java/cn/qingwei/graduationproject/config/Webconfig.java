@@ -22,6 +22,15 @@ public class Webconfig implements WebMvcConfigurer {
         registry.addViewController("/mycrowdfunding").setViewName("mycrowdfunding");
         registry.addViewController("/myorder").setViewName("myorder");
         registry.addViewController("/index").setViewName("index");
+        registry.addViewController("/itemcheckpage").setViewName("admin/itemcheck");
+        registry.addViewController("/myitem").setViewName("myitem");
+        registry.addViewController("/myitemorder").setViewName("myitemorder");
+        registry.addViewController("/itemorderallpage").setViewName("admin/itemorderallpage");
+        registry.addViewController("/itemorderrefundpage").setViewName("admin/itemorderrefundpage");
+        registry.addViewController("/myreward").setViewName("myreward");
+
+
+
 //
     }
     @Override
@@ -31,6 +40,7 @@ public class Webconfig implements WebMvcConfigurer {
         InterceptorRegistration ir=registry.addInterceptor(new LoginInterceptor());
         ir.addPathPatterns("/mycrowdfunding");
         ir.addPathPatterns("/myorder");
+        ir.addPathPatterns("/myitem");
         ir.addPathPatterns("/useredit");
         ir.addPathPatterns("/addressedit");
         ir.addPathPatterns("/release");

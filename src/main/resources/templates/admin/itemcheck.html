@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en"   xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head th:replace="nav::head(~{::title},~{::link},~{::script})">
+    <title>登陆</title>
+    <link rel="stylesheet" href="">
+    <script></script>
+</head>
+<body>
+<div style="padding: 15px;">
+
+    <div class="demoTable">
+        搜索商户：
+        <div class="layui-inline">
+            <input class="layui-input" name="keyword" id="demoReload" autocomplete="off">
+        </div>
+        <button class="layui-btn" data-type="reload" id="searchbtn">搜索</button>
+    </div>
+    <table class="layui-hide" id="LAY_table_user" lay-filter="useruv" style="line-height: 28px;"></table>
+
+</div>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-mini" lay-event="agree">批准</a>
+    <a class="layui-btn layui-btn-mini" lay-event="refuse">拒绝</a>
+</script>
+
+<script>
+
+
+    layui.use('table', function(){
+        var table = layui.table;
+        //方法级渲染
+        table.render({
+
+            elem: '#LAY_table_user'
+            ,url: 'getcheckitem'
+
+            ,cols: [
+                [
+                    {checkbox: true, fixed: true}
+                    ,{field:'id', title: 'ID', width:80, sort: true, fixed: true}
+                    ,{field:'title', title: '标题', width:200, sort: true, fixed: true,templet:'<div>{{d.crowdfunding.title+d.crowdfunding.gear.title}}</div>'}
+                    ,{field: 'showpic', title: '项目图片', width: 90, templet:'<div><img src="{{ d.crowdfunding.gear.gearimg }}" width="300" height="300" onerror="javascript:this.src=\'https://s.moimg.net/new/images/default.jpg\'" class="layui-nav-img"></div>'}
+
+                    ,{field:'content', title: '简介', width:160, sort: true,edit:true,templet:'<div>{{d.crowdfunding.content}}</div>'}
+                    ,{field:'introduction', title: '内容', width:160, sort: true,edit:true,templet:'<div>{{d.crowdfunding.gear.introduction}}</div>'}
+                    ,{field:'creatername', title: '建立者', width:100,sort: true,templet:'<div>{{d.crowdfunding.creatername}}</div>'}
+                    ,{field:'price', title: '标题', width:200, sort: true}
+                    ,{field:'num', title: '库存数量', width:200, sort: true}
+                    ,{field:'itemstatus', title: '状态', width:200, sort: true}
+                    // ,{field:'end_date', title: '结束日期', width:120,sort: true}
+                    // ,{field: 'status', title: '状态', width:80, sort: true, }
+                    , {field:'right', title: '操作', width:300,toolbar:"#barDemo"}
+                    // ,{field:'datatype', title: '日期类型', width:100}
+                ]
+            ]
+            ,page: true
+            ,height: 600
+        });
+        var $ = layui.$, active = {
+            reload: function(){
+                var demoReload = $('#demoReload');
+
+                table.reload('LAY_table_user', {
+                    where: {
+                        keyword: demoReload.val()
+
+                    }
+                });
+            }
+        };
+
+        $('#searchbtn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        table.on('checkbox(useruv)', function(obj){
+            console.log(obj)
+        });
+
+
+
+        //监听工具条
+        table.on('tool(useruv)', function(obj){
+            var data = obj.data;
+            console.log(data.crowdfunding.gear.cid)
+            console.log("___________")
+            if(obj.event === 'agree'){
+                layer.confirm('你确定批准此商品吗', function(index){
+                    $.ajax({
+                        url: "/line",
+                        type: "POST",
+                        data:{"id":data.id,"status":1},
+                        dataType: "json",
+                        success: function(data){
+                            if(data['status']==0){
+                                layer.msg("你已经批准该商品", {icon: 6});
+                                table.reload('LAY_table_user', {
+                                    // where: {
+                                    //     keyword: demoReload.val()
+                                    //
+                                    // }
+                                });
+                            }
+                            else {
+                                layer.msg("系统繁忙，请稍后再试", {icon: 6});
+                                table.reload('LAY_table_user', {
+                                    // where: {
+                                    //     keyword: demoReload.val()
+                                    //
+                                    // }
+                                });
+                            }
+
+                            console.log(data)
+                        }, error:function () {
+                            layer.msg("出错,未知原因", {icon: 5});
+
+                        }
+
+
+                    });
+
+                });
+
+
+
+            }else if (obj.event==='refuse'){
+                layer.confirm('确定将拒绝商品上线吗', function(index){
+                    $.ajax({
+                        url: "/line",
+                        type: "POST",
+                        data:{"id":data.id,"status":2},
+                        dataType: "json",
+                        success: function(data){
+                            if(data['status']==0){
+                                layer.msg("你已经拒绝该商品", {icon: 6});
+                                table.reload('LAY_table_user', {
+                                    // where: {
+                                    //     keyword: demoReload.val()
+                                    //
+                                    // }
+                                });
+                            }
+                            else {
+                                layer.msg("系统繁忙，请稍后再试", {icon: 6});
+                                table.reload('LAY_table_user', {
+                                    // where: {
+                                    //     keyword: demoReload.val()
+                                    //
+                                    // }
+                                });
+                            }
+
+                            console.log(data)
+                        }, error:function () {
+                            layer.msg("出错,未知原因", {icon: 5});
+
+                        }
+
+
+                    });
+
+                });
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>

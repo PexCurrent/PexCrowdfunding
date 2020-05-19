@@ -39,6 +39,11 @@ Usermapper mapper;
 
     @Autowired
     CommentMapper commentService;
+    @Autowired
+    ItemMapper itemMapper;
+    @Autowired
+    ItemOrderMapper itemOrderMapper;
+
     @Test
 
 
@@ -95,7 +100,7 @@ Usermapper mapper;
 //        System.out.println(crowfundingmapper.gettitlebyid(29));
 
 
-        System.out.println(commentService.getcomment(30));
+        System.out.println(itemOrderMapper.getallorder());
 
 
 //        System.out.println(addressmapper.test(address));

@@ -90,6 +90,10 @@
                 <li class="layui-nav-item layui-nav-itemed">
                     <a  href="javascript:;" >订单管理</a>
                     <dl class="layui-nav-child">
+
+                        <dd>
+                            <a  onclick="forwardiframe('/orderpage')">订单表</a>
+                        </dd>
                         <dd>
                             <a  onclick="forwardiframe('/refundpage')">退款列表</a>
                         </dd>
@@ -97,6 +101,28 @@
                     </dl>
                 </li>
 
+
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a  href="javascript:;" >商品管理</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a  onclick="forwardiframe('/itemallpage')">商品列表</a>
+                            <a  onclick="forwardiframe('/itemcheckpage')">批准商品</a>
+
+                        </dd>
+
+                    </dl>
+                </li>
+                <li class="layui-nav-item layui-nav-itemed">
+                    <a  href="javascript:;" >商品订单管理</a>
+                    <dl class="layui-nav-child">
+                        <dd>
+                            <a  onclick="forwardiframe('/itemorderallpage')">所有商品订单</a>
+                            <a  onclick="forwardiframe('/itemorderrefundpage')">退款列表</a>
+                        </dd>
+
+                    </dl>
+                </li>
 
                 <li class="layui-nav-item">
                     <a href="javascript:;">解决方案</a>

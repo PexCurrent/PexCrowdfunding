@@ -89,4 +89,14 @@ public class OrderServiceImpl implements OrderService {
     public OrderStatusCount StatusordercountbyUId(int uid) {
         return orderMapper.StatusordercountbyUId(uid);
     }
+
+    @Override
+    public List<Order> getallorder() {
+        return orderMapper.getallorder();
+    }
+
+    @Override
+    public List<Order> getallorderbyoid(String oId) {
+        return orderMapper.getallorderbyoid(oId);
+    }
 }

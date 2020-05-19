@@ -38,8 +38,8 @@
                         <i class="iconfont icon-upmore"></i>
                     </div>
                     <ul class="total_sort time_money" data-for-class="time_money" >
-                        <li><a href="/all//preheat/top_time" class="active" rank="top_time">最新上线</a></li>
-                        <li><a href="/all/preheat/hot/" rank="top_money">最热</a></li>
+                        <li><a href="/allitem/top_time" class="active" rank="top_time">最新上线</a></li>
+                        <li><a href="/allitem/low_price" rank="top_money">最热</a></li>
 
                     </ul>
                 </li>
@@ -51,33 +51,35 @@
         <ul class="pro_ul clearfix" >
 
             <!--预约状态-->
-            <li class="appointment pc_ga_pro_index_16" data-pro-id="96211" v-for="crowdfunding in crowdfundings">
-                <a v-bind:href="'/reservation/'+crowdfunding.id" >
+            <li class="appointment pc_ga_pro_index_16" data-pro-id="96211" v-for="item in items">
+                <a v-bind:href="'/item/'+item.id" >
                     <div class="pro_logo">
-                        <img v-bind:src="crowdfunding.showpic" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'">
+                        <img v-bind:src="item.crowdfunding.showpic" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'">
                     </div>
                 </a>
                 <div class="pro_txt_field">
-                    <a v-bind:href="'/reservation/'+crowdfunding.id" target="_blank"><h3 class="pro_title">{{crowdfunding.title}}</h3></a>
+                    <a v-bind:href="'/item/'+item.id" target="_blank"><h3 class="pro_title">{{item.crowdfunding.title}}{{item.crowdfunding.title}}</h3></a>
                     <div class="author">
-                        <a v-bind:href="'/reservation/'+crowdfunding.id">
+                        <a v-bind:href="'/item/'+item.id">
                             <div class="au_logo"
-                                 v-bind:style="{ 'background-image': 'url(' + crowdfunding.acvtor + ')','background-repeat':'no-repeat center center' ,'background-size':'cover' }"></div>
-                            <p>{{crowdfunding.creatername}}</p>
+                                 v-bind:style="{ 'background-image': 'url(' + item.user.acvtor + ')','background-repeat':'no-repeat center center' ,'background-size':'cover' }"></div>
+                            <p>{{item.crowdfunding.creatername}}</p>
                         </a>
                     </div>
                     <div class="status_ex" pro_id="96211">
                         <div class="left">
-                            <p class="status_title" > {{crowdfunding.begin_date}}  开始</p>
+                            <p class="status_title">￥{{item.price}}</p>
                         </div>
                         <div class="appointment-btn right " data-pro-id="96211">
+                            <button class="appointment  "   v-if="item.num==0"   style="color: #BCBFC3;border: 1px solid #BCBFC3" disabled onclick="ss()"><i class="iconfont  "></i> 暂不可购买</button>
+                            <button class="appointment  "   v-else ><i class="iconfont  "></i> 购买</button>
 
-                            <span class="appointment" v-if="crowdfunding.isreservation==0" v-on:click="reservation(crowdfunding.id)"><i class="iconfont icon-clock"></i> 预约</span>
-                            <span class="appointment "  style="color: #BCBFC3;border: 1px solid #BCBFC3;width: 70px" v-if="crowdfunding.isreservation==1" v-on:click="que(crowdfunding.id)"><i class="iconfont icon-clock"></i> 已预约</span>
+
+
                         </div>
                     </div>
                     <div class="yyue_line"></div>
-                    <p class="gray_ex" pro_id="96211" style="padding-top: 0px"><span >{{crowdfunding.reservationnum}}</span> 人已预约</p>
+                    <p class="gray_ex"  style="padding-top: 0px"><span >{{item.num}}</span> 剩余</p>
                 </div>
             </li>
 
@@ -98,7 +100,7 @@
     var app=new Vue({
         el:"#container",
         data:{
-            crowdfundings:{},
+            items:{},
             count:0,
         },
 
@@ -106,13 +108,13 @@
 
 
         created(){
-            fetch("/getreservation",
+            fetch("/getitems",
 
             )
                 .then(response=>response.json())
                 .then(json=>{
-                    this.crowdfundings=json['crowdfundings'];
-                    console.log(this.crowdfundings)
+                    this.items=json['items'];
+                    console.log(this.items)
                     this.count=json["count"];
                     console.log(this.count)
                     if (json['way']==='top_time'){
@@ -121,6 +123,7 @@
                     }else{
                         $("#sign").html("最热")
                     }
+
                     $("div[data-type='page']").empty().append(page_list(json['way'],json['cur_page'], json['page_count']));
 
 
@@ -132,52 +135,7 @@
 
 
         methods:{
-            reservation:function (index) {
-        console.log(index)
-                var cid=parseInt(index);
-                $.ajax({
-                    url: "/reservationcrowdfunding",
-                    type: "POST",
-                    data:{"cid":cid},
-                    dataType: "json",
-                    success: function(data){
 
-                        if(data["status"]==1){
-
-
-                            layer.msg(data['msg'], {icon: 6});
-                            setTimeout(window.location.reload(), 3000);
-                        }else{
-                            layer.msg(data['msg'], {icon: 5});
-                        }
-                    }
-
-                });
-
-
-
-            },
-            que:function (index) {
-                var cid=parseInt(index);
-                $.ajax({
-                    url: "/delreservation",
-                    type: "POST",
-                    data:{"cid":cid},
-                    dataType: "json",
-                    success: function(data){
-
-                        if(data["status"]==1){
-
-
-                            layer.msg(data['msg'], {icon: 6});
-                            setTimeout(window.location.reload(), 3000);
-                        }else{
-                            layer.msg(data['msg'], {icon: 5});
-                        }
-                    }
-
-                });
-            }
 
 
 
@@ -195,31 +153,31 @@
         var html = '';
 
         if (cur_page > 1) {
-            html += '<a href="/all/preheat/'+way+'/' + (cur_page - 1) + '" page="' + (cur_page - 1) + '" class="ico"><i class="iconfont icon-leftmore"></i> </a>';
+            html += '<a href="/allitem/'+way+'/' + (cur_page - 1) + '" page="' + (cur_page - 1) + '" class="ico"><i class="iconfont icon-leftmore"></i> </a>';
         }
         var page_start = 0, page_end = 0;
         page_start = cur_page > 2 ? cur_page - 2 : 1;
         page_end = (cur_page + 2) > page_count ? page_count : cur_page + 2;
         if (page_start = 1) {
-            html += '<a href="/all/preheat/'+way+'/1"        page="1">1</a>';
+            html += '<a href="/allitem/'+way+'/1"        page="1">1</a>';
         }
         if (page_start > 1) {
-            html += '<a href="/all/preheat/'+way+'/1" page="1">1</a>';
+            html += '<a href="/allitem/'+way+'/1" page="1">1</a>';
         }
         if (page_start > 2) {
             html += '<span>...</span>';
         }
         for (var i = page_start; i <= page_end; i++) {
-            html += '<a href="/all/preheat/'+way+'/'+ i + '" page="' + i + '" ' + (cur_page == i ? ' class="active"' : '') + '>' + i + '</a>';
+            html += '<a href="/allitem/'+way+'/'+ i + '" page="' + i + '" ' + (cur_page == i ? ' class="active"' : '') + '>' + i + '</a>';
         }
         if (page_count - 1 > page_end) {
             html += '<span>...</span>';
         }
         if (page_count > page_end) {
-            html += '<a href="/all/preheat/'+way+'/' + page_count + '" page="' + page_count + '">' + page_count + '</a>';
+            html += '<a href="/allitem/'+way+'/' + page_count + '" page="' + page_count + '">' + page_count + '</a>';
         }
         if (cur_page < page_count) {
-            html += '<a href="/all/preheat/'+way+'/' + (cur_page + 1) + '" page="' + (cur_page + 1) + '" class="next"><i class="iconfont icon-nestmore"></i> </a>';
+            html += '<a href="/allitem/'+way+'/' + (cur_page + 1) + '" page="' + (cur_page + 1) + '" class="next"><i class="iconfont icon-nestmore"></i> </a>';
         }
         return html;
     }

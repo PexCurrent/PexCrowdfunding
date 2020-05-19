@@ -121,7 +121,7 @@ public class CrowdfundingController {
     }
    @RequestMapping("/Crowdfunding/{id}")
     public String getCrowdfunding(@PathVariable("id") int id,HttpServletRequest request, HttpServletResponse response){
-       if (crowfundingService.CrowfundingisexitbyIdbystatus(id,1)!=0){
+       if (crowfundingService.CrowfundingisexitbyIdbystatus(id,1)!=0||crowfundingService.ischeck(id)==0){
            System.out.println("test");
            request.getSession().setAttribute("crowdfunding_id",id);
            return "Crowdfunding";
@@ -137,13 +137,10 @@ public class CrowdfundingController {
 
     @RequestMapping("/Crowdfundingdemo/{id}")
     public String getCrowdfundingdemo(@PathVariable("id") int id,HttpServletRequest request, HttpServletResponse response){
-        if (crowfundingService.CrowfundingisexitbyIdbystatus(id,1)!=0){
-            System.out.println("test");
-            request.getSession().setAttribute("crowdfunding_id",id);
-            return "Crowdfundingdemo";
-        }else {
-            return "error";
-        }
+        System.out.println("test");
+        request.getSession().setAttribute("crowdfunding_id",id);
+        return "Crowdfundingdemo";
+
 
 
 

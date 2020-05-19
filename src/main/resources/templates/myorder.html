@@ -338,7 +338,10 @@
 
         <div class="delivery_info">
             <h4>订单信息</h4>
-            <section><p><span>订单号</span><span id="ordernumber">1011903230921480480764</span></p><p><span>下单时间</span><span id="begin_time">2019-03-23 09:21:48</span></p><p><span>付款时间</span><span id="paytime">2019-03-23 09:21:55</span></p></section></div></div>
+            <section><p><span>订单号</span><span id="ordernumber">1011903230921480480764</span></p>
+
+                <p><span>快递号</span><span id="expressnumber"></span></p>
+                <p><span>下单时间</span><span id="begin_time">2019-03-23 09:21:48</span></p><p><span>付款时间</span><span id="paytime">2019-03-23 09:21:55</span></p></section></div></div>
 </div>
 
 
@@ -580,6 +583,7 @@
                         var release_month=data['order']['crowdfunding']['gear']['release_month']
                         var money=data['order']['money']
                         var ordernumber=data['order']['oid']
+                        var express_id=data['order']['express_id']
                         $("#geardescribe").html(describe)
                         $("#begin_time").html(begin_time)
                         $("#paytime").html(begin_time)
@@ -589,6 +593,7 @@
                         $("#title").html(title)
                         $("#huibao").html(huibao)
                         $("#release_time").html(release_year+"-"+release_month)
+                        $("#expressnumber").html(express_id)
                         $("#money").html("¥"+money)
                         $("#ordernumber").html(ordernumber)
 
@@ -703,6 +708,9 @@
                 var release_month=dataObj['release_month']
                 var money=dataObj['money']
                 var ordernumber=dataObj['ordernumber']
+                var expressnumber=dataObj['express_id']
+                console.log(expressnumber)
+
                 $("#geardescribe").html(describe)
                 $("#begin_time").html(begin_time)
                 $("#paytime").html(begin_time)
@@ -712,6 +720,7 @@
                 $("#title").html(title)
                 $("#huibao").html(huibao)
                 $("#release_time").html(release_year+"-"+release_month)
+                $("#expressnumber").html(expressnumber);
                 $("#money").html("¥"+money)
                 $("#ordernumber").html(ordernumber)
 

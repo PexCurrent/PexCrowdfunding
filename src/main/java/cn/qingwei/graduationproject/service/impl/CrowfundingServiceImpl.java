@@ -217,4 +217,9 @@ public class CrowfundingServiceImpl implements CrowfundingService {
     public List<Crowdfunding> notifyreservation() {
         return crowfundingmapper.notifyreservation();
     }
+
+    @Override
+    public Integer ischeck(int id) {
+        return crowfundingmapper.ischeck(id);
+    }
 }

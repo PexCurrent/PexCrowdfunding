@@ -6,11 +6,14 @@ import cn.qingwei.graduationproject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -67,7 +70,12 @@ public class registerConroller {
           String confimcode=getRandomString();
             user.setActiveCode(confimcode);
            userFeign.insertUser(user);
-           sentemail(user.getEmail(),confimcode);
+    try {
+        sentemail2(user.getEmail(),confimcode);
+    } catch (Exception e) {
+        e.printStackTrace();
+        result.put("message","注册失败,请稍后再尝试");
+    }
 //    request.setAttribute("message", " 查收邮箱!!");
     result.put("message","注册成功 请使用邮箱激活账号 5秒后自动跳转到登陆页面");
 
@@ -82,7 +90,7 @@ public class registerConroller {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setSubject("欢迎注册访问Pex众筹，你的梦想。我们帮你实现！");
 
-        message.setText("<a href=\"http://localhost:8800/confirm?activeCode="+activeCode+"\">激活请点击:"+activeCode+"</a> ");
+        message.setText("激活请点击:<a href=\"http://localhost:8800/confirm?activeCode="+activeCode+"\">此</a> 非常感谢你能注册Pex众筹");
         message.setTo(email);
         message.setFrom("17803865542@163.com");
 
@@ -90,6 +98,47 @@ public class registerConroller {
 
 
     }
+
+
+    public void sentemail2(String email,String activeCode)throws Exception{
+
+            SimpleMailMessage message = new SimpleMailMessage();
+            JavaMailSenderImpl senderImpl = new JavaMailSenderImpl();
+
+            //设定mail server
+            senderImpl.setHost("smtp.163.com");
+
+            //建立邮件消息,发送简单邮件和html邮件的区别
+            MimeMessage mailMessage = senderImpl.createMimeMessage();
+            MimeMessageHelper messageHelper = new MimeMessageHelper(mailMessage,true, "utf-8");
+
+            //设置收件人，寄件人
+            messageHelper.setTo(email);
+            messageHelper.setFrom("17803865542@163.com");
+            messageHelper.setSubject("\"欢迎注册访问Pex众筹，你的梦想。我们帮你实现！\"");
+            //true 表示启动HTML格式的邮件
+            String msg="激活请点击:<a href=\"http://localhost:8800/confirm?activeCode="+activeCode+"\">此</a> 非常感谢你能注册Pex众筹";
+            messageHelper.setText(msg,true);
+
+            senderImpl.setUsername("17803865542@163.com") ; // 根据自己的情况,设置username
+            senderImpl.setPassword("chenqaz19980128") ; // 根据自己的情况, 设置password
+
+            //发送邮件
+            senderImpl.send(mailMessage);
+
+            System.out.println("邮件发送成功..");
+
+
+
+
+    }
+
+
+
+
+
+
+
 
 
 

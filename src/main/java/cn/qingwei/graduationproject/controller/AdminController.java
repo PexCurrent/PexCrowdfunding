@@ -1,5 +1,6 @@
 package cn.qingwei.graduationproject.controller;
 
+import cn.qingwei.graduationproject.mapper.ItemMapper;
 import cn.qingwei.graduationproject.pojo.*;
 import cn.qingwei.graduationproject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,11 @@ public class AdminController {
 
     @Autowired
     OrderService orderService;
+    @Autowired
+    ItemService itemService;
+
+    @Autowired
+    ItemOrderService itemOrderService;
 
     @RequestMapping("/admin")
     public  String admin(HttpServletRequest request){
@@ -37,7 +43,7 @@ public class AdminController {
 
         return "admin";
         else
-            return "index";
+            return "/admin/login";
     }
     @RequestMapping("/admin/login")
     public  String adminlogin(){
@@ -249,6 +255,28 @@ return  result;
         return vo;
 
     }
+
+    @RequestMapping("/getallorder")
+    @ResponseBody
+    public Vo getorder(String keyword){
+        Vo vo=new Vo();
+        List<Order> orders;
+        if(keyword==null){
+            orders=orderService.getallorder();
+
+
+        }else {
+            orders=orderService.getallorderbyoid(keyword);
+        }
+        vo.setData(orders);
+        vo.setCount(orders.size());
+        return vo;
+
+    }
+
+
+
+
     @RequestMapping("/refundpage")
     public String refundpage(){
       return "/admin/refundpage";
@@ -260,7 +288,7 @@ return  result;
         System.out.println(uvid);
         Map<String,Object> result=new HashMap<>();
         if (orderService.refundfail(uvid)!=0){
-            result.put("status",1);
+            result.put("status",0);
             result.put("msg","已经拒绝该用户的退款请求");
 
         }else {
@@ -332,9 +360,149 @@ return  result;
 
 
 
+  @RequestMapping("/orderpage")
+    public String orderpage(){
+        return "admin/orderpage";
+  }
+    @RequestMapping("/itemallpage")
+    public String itemallpage(){
+        return "admin/itemallpage";
+    }
+
+
+    @RequestMapping("/getallitem")
+    @ResponseBody
+    public Vo getallitem(String keyword){
+        Vo vo=new Vo();
+        List<Item> items;
+        if(keyword==null){
+            items=itemService.getallitem();
+
+
+        }else {
+            items=itemService.getitembysearch(keyword);
+        }
+        vo.setData(items);
+        vo.setCount(items.size());
+        return vo;
+
+    }
 
 
 
+    @RequestMapping("/getcheckitem")
+    @ResponseBody
+    public Vo getcheckitem(String keyword){
+        Vo vo=new Vo();
+        List<Item> items;
+        if(keyword==null){
+            items=itemService.getallitembystatus(0);
 
+
+        }else {
+            items=itemService.getallitembystatusandsearch(0,keyword);
+        }
+        vo.setData(items);
+        vo.setCount(items.size());
+        return vo;
+
+    }
+
+
+
+    @RequestMapping("/getallitemorder")
+    @ResponseBody
+    public Vo getallorder(String keyword){
+        Vo vo=new Vo();
+        List<ItemOrder> orders;
+        if(keyword==null){
+            orders=itemOrderService.getallorder();
+
+
+        }else {
+            orders=itemOrderService.getallorderbyoid(keyword);
+        }
+        vo.setData(orders);
+        vo.setCount(orders.size());
+        return vo;
+
+    }
+    @RequestMapping("/refuseitemrefund")
+    @ResponseBody
+    public Map<String,Object> refuseitemrefund(String uvid){
+        System.out.println(uvid);
+        Map<String,Object> result=new HashMap<>();
+        if (itemOrderService.refundfail(uvid)!=0){
+            result.put("status",0);
+            result.put("msg","已经拒绝该用户的退款请求");
+
+        }else {
+            result.put("status",0);
+            result.put("msg","拒绝失败,出现错误");
+        }
+
+        return  result;
+
+    }
+
+    @RequestMapping("/getrefunditemorderpage")
+    @ResponseBody
+    public Vo getrefunditemorderpage(String keyword){
+        Vo vo=new Vo();
+        List<ItemOrder> orders;
+        if(keyword==null){
+            orders=itemOrderService.getallrefundorder();
+
+
+        }else {
+            orders=itemOrderService.getrefundorderbyoid(keyword);
+        }
+        vo.setData(orders);
+        vo.setCount(orders.size());
+        return vo;
+
+    }
+
+    @RequestMapping("/manageitemexpress/{iid}")
+    public  String manageitemexpress(@PathVariable("iid") String iid, HttpServletRequest request, HttpServletResponse response){
+        request.getSession().setAttribute("manage_iid",iid);
+
+        return "manageitemexpressadmin";
+    }
+
+
+    @RequestMapping("/getalliingitemorderbycid")
+    @ResponseBody
+    public Vo getalliingitemorderbycid(String keyword, HttpServletRequest request, HttpServletResponse response){
+        int iid=Integer.parseInt(request.getSession().getAttribute("manage_iid").toString());
+        Vo vo=new Vo();
+        List<ItemOrder> orders;
+        if(keyword==null){
+            orders=itemOrderService.getallingorderbyiid(iid);
+        }else {
+            orders=itemOrderService.getallingorderbyiidandsearch(iid,keyword);
+        }
+        vo.setData(orders);
+        vo.setCount(orders.size());
+        return vo;
+
+    }
+
+    @RequestMapping("edititemexpress")
+    @ResponseBody
+    public Map<String,Object> edititemexpress(String oid,String express_id){
+
+        System.out.println(oid);
+        System.out.println(express_id);
+        Map<String,Object> result=new HashMap<>();
+
+        if(itemOrderService.updateexpress_id(express_id,oid)!=0){
+            result.put("status",1);
+        }else
+            result.put("status",0);
+
+
+        return result;
+    }
 
 }

@@ -19,7 +19,7 @@ public interface OrderMapper {
     public Integer insertOrder(@Param(value="order")Order order, @Param(value="cid")int cid, @Param(value="uid")int uid);
 
 
-    @Select("select * from crowdfungdingorder where uid=#{uid}")
+    @Select("select * from crowdfungdingorder where uid=#{uid} order by begin_time desc")
     @Results({
 
             @Result(column="cid",property="crowdfunding",one = @One(select="cn.qingwei.graduationproject.mapper.Crowfundingmapper.getCrowfundingbyId",fetchType= FetchType.EAGER))
@@ -31,7 +31,7 @@ public interface OrderMapper {
     @Select("select count(1) totalcount,sum(IF((`status`=0),1,0)) shippingcount,sum(IF((`status`=1),1,0)) receivingcount, sum(IF((`status`=2),1,0)) completedcount ,sum(IF((`status`=3),1,0)) refundingcount,sum(IF((`status`=4),1,0)) refundedcount from crowdfungdingorder where uid=#{uid}")
     public OrderStatusCount StatusordercountbyUId(int uid);
 
-    @Select("select * from crowdfungdingorder where uid=#{uid} and status=#{status}")
+    @Select("select * from crowdfungdingorder where uid=#{uid} and status=#{status} order by begin_time desc")
     @Results({
             @Result(column="cid",property="crowdfunding",one = @One(select="cn.qingwei.graduationproject.mapper.Crowfundingmapper.getCrowfundingbyId",fetchType= FetchType.EAGER))
     })
@@ -58,12 +58,25 @@ public interface OrderMapper {
     public List<Order> getrefundorderbyoid(String oId);
 
 
+    @Select("select * from crowdfungdingorder ")
+    @Results({
+            @Result(column="cid",property="crowdfunding",one = @One(select="cn.qingwei.graduationproject.mapper.Crowfundingmapper.getCrowfundingbyId",fetchType= FetchType.EAGER))
+    })
+    public List<Order> getallorder();
+
+
+    @Select("select * from crowdfungdingorder where oId like  '%${oId}%'  ")
+    @Results({
+            @Result(column="cid",property="crowdfunding",one = @One(select="cn.qingwei.graduationproject.mapper.Crowfundingmapper.getCrowfundingbyId",fetchType= FetchType.EAGER))
+    })
+    public List<Order> getallorderbyoid(String oId);
+
 
     @Update("update  crowdfungdingorder set status=4 where oId=#{oId}")
     public Integer refundsuccess(String oId);
 
 
-    @Update("update  crowdfungdingorder set status=1 where oId=#{oId}")  //拒绝退款 说明已经发货了
+    @Update("update  crowdfungdingorder set status=0 where oId=#{oId}")  //拒绝退款 说明已经发货了
     public Integer refundfail(String oId);
 
     @Update("update  crowdfungdingorder set status=#{status} where oId=#{oId}")  //拒绝退款 说明已经发货了
@@ -79,7 +92,7 @@ public interface OrderMapper {
 
 
 
-    @Select("select  * from crowdfungdingorder  where cid=#{cid} and status=1")  //设置status=1 是因为有的账单可能之前已经退款过了 不允许他重复退款
+    @Select("select  * from crowdfungdingorder  where cid=#{cid} and (status=0 or status=1)")  //设置status=1 是因为有的账单可能之前已经退款过了 不允许他重复退款
     @Results({
             @Result(column="cid",property="crowdfunding",one = @One(select="cn.qingwei.graduationproject.mapper.Crowfundingmapper.getCrowfundingbyId",fetchType= FetchType.EAGER))
     })
@@ -87,7 +100,7 @@ public interface OrderMapper {
 
 
 
-    @Select("select  * from crowdfungdingorder  where cid=#{cid} and status=1 and oId like '%${search}%' ")  //设置status=1 是因为有的账单可能之前已经退款过了 不允许他重复退款
+    @Select("select  * from crowdfungdingorder  where cid=#{cid} and (status=0 or status=1) and oId like '%${search}%' ")  //设置status=1 是因为有的账单可能之前已经退款过了 不允许他重复退款
     @Results({
             @Result(column="cid",property="crowdfunding",one = @One(select="cn.qingwei.graduationproject.mapper.Crowfundingmapper.getCrowfundingbyId",fetchType= FetchType.EAGER))
     })

@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="nav::head(~{::title},~{::link},~{::script})">
+    <title>打赏</title>
+    <link rel="stylesheet" href="/css/freesupport.css">
+    <link rel="stylesheet" href="/css/zhifubao.css">
+    <link rel="stylesheet" href="/css/order.css">
+    <script src="/distpicker/distpicker.data.js" ></script>
+    <script src="/distpicker/distpicker.js" ></script>
+    <link rel="stylesheet" href="https://s.moimg.net/iconfont/iconfont.css?20171213d9etsd32s3g5e4de2dgchdile0sdss20170207">
+    <script></script>
+
+</head>
+<body>
+<script th:replace="nav::logoout"></script>
+<nav th:replace="nav::topbar"></nav>
+<div id="container">
+    <div id="main" class="main">
+        <div class="header">
+            <h1>我的订单</h1>
+            <div class="nav">
+                <ul class="tab">
+                    <li><a   class="order-list-status active">全部订单({{orderStatusCount.totalcount}})<b></b></a></li>
+                    <li><a   class="order-list-status">待发货({{orderStatusCount.shippingcount}})<b></b></a><span></span></li>
+                    <li><a class="order-list-status"  >待收货({{orderStatusCount.receivingcount}})<b></b></a><span></span></li>
+                    <li><a   class="order-list-status">已完成({{orderStatusCount.completedcount}})<b></b></a><span></span></li>
+                    <li><a class="order-list-status"  >退款中({{orderStatusCount.refundingcount}})<b></b></a><span></span></li>
+                    <li><a   class="order-list-status">已退款({{orderStatusCount.refundedcount}})<b></b></a><span></span></li>
+                    <li class="fr"><a class="weixin-btn"  target="_blank">联系客服<b></b></a></li>
+                </ul>
+            </div>
+        </div>
+        <div  class="content deal" >
+            <ul v-for="order in orders">
+
+                <li >
+                    <section>
+
+                        <a class="refund-btn" href="javascript:;"><img src="https://s.moimg.net/new/images/order/arrow_down_20x13.png"></a>
+                        <a v-bind:href="'/item/'+order.item.id" ><img class="front_img fl"   v-bind:src="'http://127.0.0.1:8800/'+order.item.crowdfunding.showpic" alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                        <div class="middle_part fl">
+                            <p class="inner1"><a href="https://zhongchou.modian.com/item/61433.html" ></a></p>
+                            <p class="inner2">商品名称：<span>{{order.item.crowdfunding.title}}  {{order.item.crowdfunding.gear.title}}</span>                        <a class="order_detail" pid="1011905281511020020028"  v-on:click="getdetail(order.oid)">订单详情</a>
+                            </p>
+                            <p class="inner3">
+                                商品价格：<span>￥{{order.item.price}}</span><span> * 1份</span>                    </p>
+                            <p class="inner4">
+                                实际支付的金额：<span>￥{{order.money}}</span>
+                            </p>
+                        </div>
+                        <div class="right_part fl">
+                            <div class="inner_text">
+                                <p>{{order.status}}</p>
+                            </div>
+                            <div class="bottom_btn  several" style="width: 331px">
+
+
+                                <a v-bind:href="'/item/'+order.item.id" >再次购买</a>
+                                <a v-if="order.status=='待发货'"  v-on:click="edit(order.oid)" >修改地址</a>
+                                <a v-if="order.status=='待发货'"  v-on:click="refund(order.oid)" >退款</a>
+                                <a v-if="order.status=='待收货'"  v-on:click="confirmitem(order.oid)">确定收货</a>
+                                <a v-if="order.status=='退款中'" v-on:click="cancelrefund(order.oid)" >取消退款</a>
+                                <!--                            <a v-if="order.status=='待发货'">s </a>-->
+
+
+
+
+
+                            </div>
+                        </div>
+                    </section>
+                </li>
+
+
+            </ul>
+
+
+        </div>
+        <div  class="content deal" >
+            <ul v-for="order in shippingorders">
+
+                <li >
+                    <section>
+
+                        <a class="refund-btn" href="javascript:;"><img src="https://s.moimg.net/new/images/order/arrow_down_20x13.png"></a>
+                        <a v-bind:href="'/item/'+order.item.id" ><img class="front_img fl"   v-bind:src="'http://127.0.0.1:8800/'+order.item.crowdfunding.showpic" alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                        <div class="middle_part fl">
+                            <p class="inner1"><a href="https://zhongchou.modian.com/item/61433.html" ></a></p>
+                            <p class="inner2">商品名称：<span>{{order.item.crowdfunding.title}}  {{order.item.crowdfunding.gear.title}}</span>                        <a class="order_detail" pid="1011905281511020020028"  v-on:click="getdetail(order.oid)">订单详情</a>
+                            </p>
+                            <p class="inner3">
+                                商品价格：<span>￥{{order.item.price}}</span><span> * 1份</span>                    </p>
+                            <p class="inner4">
+                                实际支付的金额：<span>￥{{order.money}}</span>
+                            </p>
+                        </div>
+                        <div class="right_part fl">
+                            <div class="inner_text">
+                                <p>{{order.status}}</p>
+                            </div>
+                            <div class="bottom_btn  several" style="width: 331px">
+
+
+                                <a v-bind:href="'/item/'+order.item.id" >再次购买</a>
+                                <a v-if="order.status=='待发货'"  v-on:click="edit(order.oid)" >修改地址</a>
+                                <a v-if="order.status=='待发货'"  v-on:click="refund(order.oid)" >退款</a>
+                                <a v-if="order.status=='待收货'"  v-on:click="confirmitem(order.oid)">确定收货</a>
+                                <a v-if="order.status=='退款中'" v-on:click="cancelrefund(order.oid)" >取消退款</a>
+                                <!--                            <a v-if="order.status=='待发货'">s </a>-->
+
+
+
+
+
+                            </div>
+                        </div>
+                    </section>
+                </li>
+
+
+            </ul>
+
+
+        </div>
+        <div  class="content deal" >
+            <ul v-for="order in receivingorders">
+
+                <li >
+                    <section>
+
+                        <a class="refund-btn" href="javascript:;"><img src="https://s.moimg.net/new/images/order/arrow_down_20x13.png"></a>
+                        <a v-bind:href="'/item/'+order.item.id" ><img class="front_img fl"   v-bind:src="'http://127.0.0.1:8800/'+order.item.crowdfunding.showpic" alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                        <div class="middle_part fl">
+                            <p class="inner1"><a href="https://zhongchou.modian.com/item/61433.html" ></a></p>
+                            <p class="inner2">商品名称：<span>{{order.item.crowdfunding.title}}  {{order.item.crowdfunding.gear.title}}</span>                        <a class="order_detail" pid="1011905281511020020028"  v-on:click="getdetail(order.oid)">订单详情</a>
+                            </p>
+                            <p class="inner3">
+                                商品价格：<span>￥{{order.item.price}}</span><span> * 1份</span>                    </p>
+                            <p class="inner4">
+                                实际支付的金额：<span>￥{{order.money}}</span>
+                            </p>
+                        </div>
+                        <div class="right_part fl">
+                            <div class="inner_text">
+                                <p>{{order.status}}</p>
+                            </div>
+                            <div class="bottom_btn  several" style="width: 331px">
+
+
+                                <a v-bind:href="'/item/'+order.item.id" >再次购买</a>
+                                <a v-if="order.status=='待发货'"  v-on:click="edit(order.oid)" >修改地址</a>
+                                <a v-if="order.status=='待发货'"  v-on:click="refund(order.oid)" >退款</a>
+                                <a v-if="order.status=='待收货'"  v-on:click="confirmitem(order.oid)">确定收货</a>
+                                <a v-if="order.status=='退款中'" v-on:click="cancelrefund(order.oid)" >取消退款</a>
+                                <!--                            <a v-if="order.status=='待发货'">s </a>-->
+
+
+
+
+
+                            </div>
+                        </div>
+                    </section>
+                </li>
+
+
+            </ul>
+
+
+        </div>
+        <div  class="content deal" >
+            <ul v-for="order in completedorders">
+
+                <li >
+                    <section>
+
+                        <a class="refund-btn" href="javascript:;"><img src="https://s.moimg.net/new/images/order/arrow_down_20x13.png"></a>
+                        <a v-bind:href="'/item/'+order.item.id" ><img class="front_img fl"   v-bind:src="'http://127.0.0.1:8800/'+order.item.crowdfunding.showpic" alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                        <div class="middle_part fl">
+                            <p class="inner1"><a href="https://zhongchou.modian.com/item/61433.html" ></a></p>
+                            <p class="inner2">商品名称：<span>{{order.item.crowdfunding.title}}  {{order.item.crowdfunding.gear.title}}</span>                        <a class="order_detail" pid="1011905281511020020028"  v-on:click="getdetail(order.oid)">订单详情</a>
+                            </p>
+                            <p class="inner3">
+                                商品价格：<span>￥{{order.item.price}}</span><span> * 1份</span>                    </p>
+                            <p class="inner4">
+                                实际支付的金额：<span>￥{{order.money}}</span>
+                            </p>
+                        </div>
+                        <div class="right_part fl">
+                            <div class="inner_text">
+                                <p>{{order.status}}</p>
+                            </div>
+                            <div class="bottom_btn  several" style="width: 331px">
+
+
+                                <a v-bind:href="'/item/'+order.item.id" >再次购买</a>
+                                <a v-if="order.status=='待发货'"  v-on:click="edit(order.oid)" >修改地址</a>
+                                <a v-if="order.status=='待发货'"  v-on:click="refund(order.oid)" >退款</a>
+                                <a v-if="order.status=='待收货'"  v-on:click="confirmitem(order.oid)">确定收货</a>
+                                <a v-if="order.status=='退款中'" v-on:click="cancelrefund(order.oid)" >取消退款</a>
+                                <!--                            <a v-if="order.status=='待发货'">s </a>-->
+
+
+
+
+
+                            </div>
+                        </div>
+                    </section>
+                </li>
+
+
+            </ul>
+
+
+        </div>
+        <div  class="content deal" >
+            <ul v-for="order in refundingorders">
+
+                <li >
+                    <section>
+
+                        <a class="refund-btn" href="javascript:;"><img src="https://s.moimg.net/new/images/order/arrow_down_20x13.png"></a>
+                        <a v-bind:href="'/item/'+order.item.id" ><img class="front_img fl"   v-bind:src="'http://127.0.0.1:8800/'+order.item.crowdfunding.showpic" alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                        <div class="middle_part fl">
+                            <p class="inner1"><a href="https://zhongchou.modian.com/item/61433.html" ></a></p>
+                            <p class="inner2">商品名称：<span>{{order.item.crowdfunding.title}}  {{order.item.crowdfunding.gear.title}}</span>                        <a class="order_detail" pid="1011905281511020020028"  v-on:click="getdetail(order.oid)">订单详情</a>
+                            </p>
+                            <p class="inner3">
+                                商品价格：<span>￥{{order.item.price}}</span><span> * 1份</span>                    </p>
+                            <p class="inner4">
+                                实际支付的金额：<span>￥{{order.money}}</span>
+                            </p>
+                        </div>
+                        <div class="right_part fl">
+                            <div class="inner_text">
+                                <p>{{order.status}}</p>
+                            </div>
+                            <div class="bottom_btn  several" style="width: 331px">
+
+
+                                <a v-bind:href="'/item/'+order.item.id" >再次购买</a>
+                                <a v-if="order.status=='待发货'"  v-on:click="edit(order.oid)" >修改地址</a>
+                                <a v-if="order.status=='待发货'"  v-on:click="refund(order.oid)" >退款</a>
+                                <a v-if="order.status=='待收货'"  v-on:click="confirmitem(order.oid)">确定收货</a>
+                                <a v-if="order.status=='退款中'" v-on:click="cancelrefund(order.oid)" >取消退款</a>
+                                <!--                            <a v-if="order.status=='待发货'">s </a>-->
+
+
+
+
+
+                            </div>
+                        </div>
+                    </section>
+                </li>
+
+
+            </ul>
+
+
+        </div>
+        <div  class="content deal" >
+            <ul v-for="order in refundedorders">
+
+                <li >
+                    <section>
+
+                        <a class="refund-btn" href="javascript:;"><img src="https://s.moimg.net/new/images/order/arrow_down_20x13.png"></a>
+                        <a v-bind:href="'/item/'+order.item.id" ><img class="front_img fl"   v-bind:src="'http://127.0.0.1:8800/'+order.item.crowdfunding.showpic" alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                        <div class="middle_part fl">
+                            <p class="inner1"><a href="https://zhongchou.modian.com/item/61433.html" ></a></p>
+                            <p class="inner2">商品名称：<span>{{order.item.crowdfunding.title}}  {{order.item.crowdfunding.gear.title}}</span>                        <a class="order_detail" pid="1011905281511020020028"  v-on:click="getdetail(order.oid)">订单详情</a>
+                            </p>
+                            <p class="inner3">
+                                商品价格：<span>￥{{order.item.price}}</span><span> * 1份</span>                    </p>
+                            <p class="inner4">
+                                实际支付的金额：<span>￥{{order.money}}</span>
+                            </p>
+                        </div>
+                        <div class="right_part fl">
+                            <div class="inner_text">
+                                <p>{{order.status}}</p>
+                            </div>
+                            <div class="bottom_btn  several" style="width: 331px">
+
+
+                                <a v-bind:href="'/item/'+order.item.id" >再次购买</a>
+                                <a v-if="order.status=='待发货'"  v-on:click="edit(order.oid)" >修改地址</a>
+                                <a v-if="order.status=='待发货'"  v-on:click="refund(order.oid)" >退款</a>
+                                <a v-if="order.status=='待收货'"  v-on:click="confirmitem(order.oid)">确定收货</a>
+                                <a v-if="order.status=='退款中'" v-on:click="cancelrefund(order.oid)" >取消退款</a>
+                                <!--                            <a v-if="order.status=='待发货'">s </a>-->
+
+
+
+
+
+                            </div>
+                        </div>
+                    </section>
+                </li>
+
+
+            </ul>
+
+
+        </div>
+
+
+
+
+
+    </div>
+    <!--<div class="box_container showBox"> showbox 让盒子显示-->
+    <div class="box_container ">
+        <div class="deliver_detail show">
+            <div> <h3>订单详情</h3>   <button class="btn btn-success " style="float: right;margin-top: -40px" onclick="closedetail()">确认</button></div>
+            <div class="deliver_line"></div>
+            <div class="deliver_address">
+                <h4>收货信息</h4>
+                <section><p><span>收件人</span><span id="receiver">陈庆威 17803865542</span></p><p><span>地址</span><span id="address">河南信阳浉河民权街道,河南省信阳市浉河区城中区铁西花苑</span></p><p><span>备注</span><span id="message"></span></p></section>
+            </div>
+            <div class="deliver_line"></div>
+            <div class="deliver_infor">
+                <h4>商品信息</h4><section><p><span>商品名称</span><span id="title">中日合作！泡沫青春群像AVG：《泡沫冬景》</span></p>
+                <p class="reward_type_style"><span>信息</span><span class="reward_type_detail">
+                    <span style="    width: 100%;display: inline-block;margin-bottom: 20px" id="huibao">¥399（「菁英」悠长假期）</span>
+                    <i id="geardescribe"  STYLE="display: block;color: #7a8087;font-size: 14px;line-height: 1.5;margin-bottom: 6px; ">
+                        1、实体版独享精美游戏包装盒2、Steam激活码卡-游戏本体 × 1
+3、Steam激活码卡-OriginalSoundTrack × 1
+4、初回典藏设定集 × 1
+5、随机款式特色复制签绘板 × 2
+6、限定水晶书签 × 5
+7、随机款式主题文件夹 × 2
+8、厚皮绒主题笔记本 × 1
+
+众筹解锁：
+成功：OST升级为实体套装CD
+80000：追加特别主题挂画 × 1
+100000：特别主题广播剧 × 1
+120000：《Before the Encounter》DLC × 1
+
+「中国大陆地区包邮
+」</i>
+<span></span></span></p><p>
+                <p><span>实付金额</span><span style="text-align:right;font-size:20px;font-weight: 700;" id="money">￥399</span></p> </section></div>
+            <div class="deliver_line"></div>
+
+            <div class="delivery_info">
+                <h4>订单信息</h4>
+                <section>
+                    <p><span>订单号</span><span id="ordernumber">1011903230921480480764</span></p>
+                    <p><span>快递号</span><span id="expressnumber"></span></p>
+
+                    <p><span>下单时间</span><span id="begin_time">2019-03-23 09:21:48</span></p><p><span>付款时间</span><span id="paytime">2019-03-23 09:21:55</span></p></section></div></div>
+    </div>
+
+
+    <!-- end 评论订单 by hanson -->
+    <footer id="primary-footer" class="primary-footer" style="position: absolute; margin-top: 0px;">
+    </footer>
+
+
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="editModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">信息</h4>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="uid2" id="id2" style="display: none">
+                        <label>收货人</label>
+                        <input type="text" name="receiver" class="form-control" maxlength="20" id="receiver2" required>
+
+                    </div>
+                    <div data-toggle="distpicker">
+                        <div class="form-group" >
+                            <label>所在地址</label>
+                            <div class="form-inline">
+                                <select name="province" class="form-control" id="province2" maxlength="20">
+                                </select>
+                                <select name="city" class="form-control" id="city2" maxlength="20">
+                                </select>
+                                <select name="district" class=" form-control " id="district2" maxlength="20">
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>详细地址</label>
+
+                        <input type="text" name="place" class="form-control" maxlength="50" id="place2" required>
+                    </div>
+                    <div class="form-group">
+                        <label>联系电话</label>
+                        <input type="text" name="mobile" class="form-control" maxlength="11" id="mobile2" required>
+                    </div>
+
+
+                    <div class="modal-footer">
+                        <a><button type="button" class="btn btn-default" data-dismiss="modal">取消</button></a>
+                        <button type="submit" class="btn btn-primary" v-on:click="updateaddress()">提交</button>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+</body>
+<script>
+    $(function(){
+        $(".tab li").click(function(){
+            var n=$(this).index();
+            console.log(n)
+            $(".tab li a").removeClass("active");
+            $(this).find('a').addClass("active");
+            $(".content").hide()
+            $(".content").eq(n).show()
+
+        })
+        $(".tab li ").eq(0).click();//页面加载完成，自动切换到第一个栏目
+    })
+
+    var app=new Vue({
+        el:"#container",
+
+
+
+        data:{
+            orderStatusCount:{},
+            orders:{},
+            shippingorders:{},
+            receivingorders:{},
+            completedorders:{},
+            refundingorders:{},
+            refundedorders:{},
+        },
+        //在实例被创建之后被调用
+        created: function () {
+            fetch("/getmyitemorderbyuid",
+
+            )
+                .then(response=>response.json())
+                .then(json=>{
+                    console.log(json)
+                    console.log(json["orderStatusCount"])
+                    this.orderStatusCount=json["orderStatusCount"];
+                    console.log(this.orderStatusCount+"-----------")
+                    this.orders=json["orders"];
+                    this.shippingorders=json["shippingorders"];
+                    this.receivingorders=json["receivingorders"];
+                    this.completedorders=json["completedorders"];
+                    this.refundingorders=json["refundingorders"];
+                    this.refundedorders=json["refundedorders"]
+
+
+
+
+
+                })
+        },
+        methods: {
+            updateaddress:function () {
+                console.log("_______________")
+                var oid=$("#id2").val();
+                var receiver=$("#receiver2").val();
+                var address=$("#province2").val()+$("#city2").val()+$("#district2").val()+$("#place2").val()
+                var mobile=$("#mobile2").val()
+
+                $.ajax({
+                    url: "edititemorderinfo",
+                    type: "POST",
+                    data:{"oid":oid,"receiver":receiver,"address":address,"mobile":mobile},
+                    dataType: "json",
+                    success: function(data){
+
+                        if(data['status']==1){
+
+
+                            layer.msg(data['msg'], {icon: 6});
+                            setTimeout(window.location.reload(), 3000);
+
+                        }else{
+                            layer.msg(data['msg'], {icon: 5});
+                        }
+                    },
+                    error:function(){
+                        layer.msg("出现错误 请稍后再试", {icon: 5});
+                    }
+
+                });
+            },
+            refund:function(oid){
+                $.ajax({
+                    url: "/itemorderrefund",
+                    type: "POST",
+                    data:{"oid":oid},
+                    dataType: "json",
+                    success: function(data){
+
+                        if(data['status']==1){
+
+
+                            layer.msg(data['msg'], {icon: 6});
+                            setTimeout(window.location.reload(), 3000);
+
+                        }else{
+                            layer.msg(data['msg'], {icon: 5});
+                        }
+                    }
+
+                });
+            },
+            cancelrefund:function(oid){
+                $.ajax({
+                    url: "/cancelitemrefund",
+                    type: "POST",
+                    data:{"oid":oid},
+                    dataType: "json",
+                    success: function(data){
+
+                        if(data['status']==1){
+
+
+                            layer.msg(data['msg'], {icon: 6});
+                            setTimeout(window.location.reload(), 3000);
+                        }else{
+                            layer.msg(data['msg'], {icon: 5});
+                        }
+                    }
+
+                });
+            },
+
+            confirmitem:function(oid){
+                $.ajax({
+                    url: "/confirmitemorder",
+                    type: "POST",
+                    data:{"oid":oid},
+                    dataType: "json",
+                    success: function(data){
+
+                        if(data['status']==1){
+
+
+                            layer.msg(data['msg'], {icon: 6});
+
+                            setTimeout(window.location.reload(), 3000);
+
+                        }else{
+                            layer.msg(data['msg'], {icon: 5});
+                        }
+                    }
+
+                });
+            },
+
+
+
+
+
+            getdetail:function(index){
+                console.log(index)
+                $(".box_container").addClass("showBox")
+                $.ajax({
+                    url:"/getitemorderdetail",
+                    type: "POST",
+                    data: {"id":index},
+                    success: function (data) {
+                        console.log(data);
+                        var describe=data['order']['item']['crowdfunding']['gear']['introduction']
+                        console.log(data['order']['item']['crowdfunding']['gear']['introduction']
+                        );
+                        var title=data['order']['item']['crowdfunding']['title']
+                        var begin_time  =data['order']['item']['crowdfunding']['begin_date']
+                        var receiver=data['order']['receiver']+'  '+data['order']['mobile']
+                        var address=data['order']['address']
+                        var message=data['order']['message']
+                        var huibao="¥"+data['order']['item']['price']+"  "+ "(" +data['order']['item']['crowdfunding']['gear']['title']+ ")"
+                        var money=data['order']['money']
+                        var ordernumber=data['order']['oid']
+                        var expressnumber=data['order']['express_id']
+                        $("#geardescribe").html(describe)
+                        $("#begin_time").html(begin_time)
+                        $("#paytime").html(begin_time)
+                        $("#receiver").html(receiver)
+                        $("#address").html(address)
+                        $("#message").html(message)
+                        $("#title").html(title)
+                        $("#huibao").html(huibao)
+                        $("#expressnumber").html(expressnumber);
+                        $("#money").html("¥"+money)
+                        $("#ordernumber").html(ordernumber)
+
+
+
+
+
+
+
+                    }
+
+
+
+                });
+
+
+            },
+
+
+            // 获取需要渲染到页面中的数据
+            getShowData:function(arr) {
+                this.cloneTableDatas = JSON.parse(JSON.stringify(arr));
+            },
+            //新增
+            add: function () {
+                $('#addModal').modal('show');
+            },
+            //提交新增
+            addSubForm:function(){
+                $('#addModal').modal('hide');
+            },
+            //编辑
+            edit: function (index) {
+
+                $.ajax({
+                    url:"/getitemorder",
+                    type: "POST",
+                    data: {"oid":index},
+                    success: function (data) {
+
+
+                        $("#receiver2").val(data['order'].receiver);
+                        $("#id2").val(index);
+                        $("#mobile2").val(data['order'].mobile)
+
+                    },
+
+
+
+
+
+                });
+                $('#editModal').modal('show');
+                this.selected = index;
+                this.selectedlist = JSON.parse(JSON.stringify(this.tableDatas))[index];
+            },
+            //提交编辑
+            editSubForm:function() {
+                Vue.set(this.tableDatas, this.selected, this.selectedlist);
+                this.getShowData(this.tableDatas);
+                $('#editModal').modal('hide');
+            },
+            //删除
+            del: function (index) {
+                this.tableDatas.splice(index, 1);
+                this.getShowData(this.tableDatas);
+            },
+            //查询
+            searchFn:function (e) {
+                var key=e.target.value;
+                //查询firstName列
+                if(key){
+                    var searchArray=[];
+                    this.tableDatas.forEach(function (item) {
+                        if(item.firstName.indexOf(key)>-1){
+                            searchArray.push(item);
+                        }
+                    });
+                    this.getShowData(searchArray);
+                }else{
+                    this.getShowData(this.tableDatas);
+                }
+            }
+
+
+        }
+    })
+    // function getdetail(index) {
+    //     $.ajax({
+    //         url:"/getorderdetail",
+    //         type: "POST",
+    //         data: {"id":index},
+    //         success: function (data1) {
+    //             var dataObj=JSON.parse(data1)
+    //             var describe=dataObj['describe']
+    //             var title=dataObj['title']
+    //             var begin_time  =dataObj['begin_time']
+    //             var receiver=dataObj['receiver']+'  '+dataObj['mobile']
+    //             var address=dataObj['address']
+    //             var message=dataObj['message']
+    //             var title=dataObj['title']
+    //             var huibao="¥"+dataObj['gearmoney']+"  "+ "(" +dataObj['geartitle']+ ")"
+    //             var release_year=dataObj['release_year']
+    //             var release_month=dataObj['release_month']
+    //             var money=dataObj['money']
+    //             var ordernumber=dataObj['ordernumber']
+    //             $("#geardescribe").html(describe)
+    //             $("#begin_time").html(begin_time)
+    //             $("#paytime").html(begin_time)
+    //             $("#receiver").html(receiver)
+    //             $("#address").html(address)
+    //             $("#message").html(message)
+    //             $("#title").html(title)
+    //             $("#huibao").html(huibao)
+    //             $("#release_time").html(release_year+"-"+release_month)
+    //             $("#money").html("¥"+money)
+    //             $("#ordernumber").html(ordernumber)
+    //
+    //
+    //
+    //
+    //
+    //
+    //
+    //         }
+    //
+    //
+    //
+    //     });
+    //
+    //
+    //     $(".box_container").addClass("showBox")
+    //
+    //
+    //
+    //
+    // }
+    function closedetail() {
+        $(".box_container").removeClass("showBox")
+    }
+</script>
+</html>

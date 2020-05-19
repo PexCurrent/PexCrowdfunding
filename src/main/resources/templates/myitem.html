@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ch" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="nav::head(~{::title},~{::link},~{::script})">
+    <title>打赏</title>
+    <link rel="stylesheet" href="/css/freesupport.css">
+    <link rel="stylesheet" href="/css/zhifubao.css.css">
+    <link rel="stylesheet" href="/css/order.css">
+    <link rel="stylesheet" href="https://s.moimg.net/iconfont/iconfont.css?20171213d9etsd32s3g5e4de2dgchdile0sdss20170207">
+    <script></script>
+
+</head>
+<body>
+<script th:replace="nav::logoout"></script>
+<nav th:replace="nav::topbar"></nav>
+
+<div id="main" class="main">
+    <div class="header">
+        <h1>我上架的商品</h1>
+        <div class="nav" style="width: 1200px">
+            <ul class="tab">
+                <li><a   class="order-list-status active ">全部商品({{statuscount.totalcount}})<b></b></a></li>
+                <li><a   class="order-list-status ">审核中({{statuscount.checkcount}})<b></b></a><span></span></li>
+                <li><a class="order-list-status"  >上线中({{statuscount.onlinecount}})<b></b></a><span></span></li>
+                <li><a class="order-list-status"  >下架中({{statuscount.outlinecount}})<b></b></a><span></span></li>
+                <li class="fr"><a class="weixin-btn"  target="_blank">联系客服<b></b></a></li>
+            </ul>
+        </div>
+    </div>
+    <div  class="content deal" >
+        <ul v-for="item in items">
+
+            <li >
+                <section>
+
+                    <a class="refund-btn" href="javascript:;"></a>
+                    <a v-bind:href="'/item/'+item.id" ><img class="front_img fl"   v-bind:src="'http://127.0.0.1:8800/'+item.crowdfunding.showpic" alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                    <div class="middle_part fl">
+                        <p class="inner1"><a href="https://zhongchou.modian.com/item/61433.html" ></a></p>
+                        <p class="inner2">商品标题：<span>{{item.crowdfunding.title}}  {{item.crowdfunding.gear.title}}</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/item/'+item.id">商品详情</a>
+                        </p>
+                        <p class="inner3">
+                            库存量：<span>{{item.num}}</span>
+<!--                            (众筹价格￥{{item.crowdfunding.gear.supportAmount}})-->
+                            <span style="float: right">众筹价格:￥{{item.crowdfunding.gear.supportAmount}}</span>
+                        </p>
+                        <p class="inner4">
+                            商品价格：<span>￥{{item.price}}</span>
+
+                        </p>
+                    </div>
+                    <div class="right_part fl">
+                        <div class="inner_text">
+                            <p>{{item.itemstatus}}</p>
+                        </div>
+                        <div class="bottom_btn  several" style="width: 331px">
+
+
+
+                            <a v-if="item.itemstatus=='审核中'||item.itemstatus=='下线中'"  v-on:click="delitem(item.id)" >删除</a>
+                            <a v-if="item.itemstatus=='上线中'"  v-on:click="edititemnum(item.id)" >改变库存</a>
+                            <a v-if="item.itemstatus=='上线中'"  v-on:click="outline(item.id)" >下线</a>
+                            <a v-if="item.itemstatus=='上线中'"  v-bind:href="'/manageitemexpress/'+item.id">更新快递</a>
+                            <a v-if="item.itemstatus=='下线中'"  v-on:click="reonline(item.id)" >重新上线</a>
+<!--                            <a v-if="order.status=='待发货'"  v-on:click="refund(order.oid)" >退款</a>-->
+<!--                            <a v-if="order.status=='待收货'"  v-on:click="confirmitem(order.oid)">确定收货</a>-->
+<!--                            <a v-if="order.status=='退款中'" v-on:click="cancelrefund(order.oid)" >取消退款</a>-->
+                            <!--                            <a v-if="order.status=='待发货'">s </a>-->
+
+
+
+
+
+                        </div>
+                    </div>
+                </section>
+            </li>
+
+
+        </ul>
+
+
+    </div>
+
+    <div  class="content deal" >
+        <ul v-for="item in checkitems">
+
+            <li >
+                <section>
+
+                    <a class="refund-btn" href="javascript:;"></a>
+                    <a v-bind:href="'/item/'+item.id" ><img class="front_img fl"   v-bind:src="'http://127.0.0.1:8800/'+item.crowdfunding.showpic" alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                    <div class="middle_part fl">
+                        <p class="inner1"><a href="https://zhongchou.modian.com/item/61433.html" ></a></p>
+                        <p class="inner2">商品标题：<span>{{item.crowdfunding.title}}  {{item.crowdfunding.gear.title}}</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/item/'+item.id">商品详情</a>
+                        </p>
+                        <p class="inner3">
+                            库存量：<span>￥{{item.num}}</span>
+                            <!--                            (众筹价格￥{{item.crowdfunding.gear.supportAmount}})-->
+                            <span style="float: right">众筹价格:{{item.crowdfunding.gear.supportAmount}}</span>
+                        </p>
+                        <p class="inner4">
+                            商品价格：<span>￥{{item.price}}</span>
+
+                        </p>
+                    </div>
+                    <div class="right_part fl">
+                        <div class="inner_text">
+                            <p>{{item.itemstatus}}</p>
+                        </div>
+                        <div class="bottom_btn  several" style="width: 331px">
+
+
+                            <a v-if="item.itemstatus=='审核中'||item.itemstatus=='下线中'"  v-on:click="delitem(item.id)" >删除</a>
+                            <a v-if="item.itemstatus=='上线中'"  v-on:click="edititemnum(item.id)" >改变库存</a>
+                            <a v-if="item.itemstatus=='上线中'"  v-on:click="outline(item.id)" >下线</a>
+                            <a v-if="item.itemstatus=='上线中'"  v-bind:href="'/manageitemexpress/'+item.id">更新快递</a>
+                            <a v-if="item.itemstatus=='下线中'"  v-on:click="reonline(item.id)" >重新上线</a>
+
+
+
+
+
+                        </div>
+                    </div>
+                </section>
+            </li>
+
+
+        </ul>
+
+
+    </div>
+
+    <div  class="content deal" >
+        <ul v-for="item in onlineitems">
+
+            <li >
+                <section>
+
+                    <a class="refund-btn" href="javascript:;"></a>
+                    <a v-bind:href="'/item/'+item.id" ><img class="front_img fl"   v-bind:src="'http://127.0.0.1:8800/'+item.crowdfunding.showpic" alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                    <div class="middle_part fl">
+                        <p class="inner1"><a href="https://zhongchou.modian.com/item/61433.html" ></a></p>
+                        <p class="inner2">商品标题：<span>{{item.crowdfunding.title}}  {{item.crowdfunding.gear.title}}</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/item/'+item.id">商品详情</a>
+                        </p>
+                        <p class="inner3">
+                            库存量：<span>￥{{item.num}}</span>
+                            <!--                            (众筹价格￥{{item.crowdfunding.gear.supportAmount}})-->
+                            <span style="float: right">众筹价格:{{item.crowdfunding.gear.supportAmount}}</span>
+                        </p>
+                        <p class="inner4">
+                            商品价格：<span>￥{{item.price}}</span>
+
+                        </p>
+                    </div>
+                    <div class="right_part fl">
+                        <div class="inner_text">
+                            <p>{{item.itemstatus}}</p>
+                        </div>
+                        <div class="bottom_btn  several" style="width: 331px">
+
+
+
+                            <a v-if="item.itemstatus=='审核中'||item.itemstatus=='下线中'"  v-on:click="delitem(item.id)" >删除</a>
+                            <a v-if="item.itemstatus=='上线中'"  v-on:click="edititemnum(item.id)" >改变库存</a>
+                            <a v-if="item.itemstatus=='上线中'"  v-on:click="outline(item.id)" >下线</a>
+                            <a v-if="item.itemstatus=='上线中'"  v-bind:href="'/manageitemexpress/'+item.id">更新快递</a>
+                            <a v-if="item.itemstatus=='下线中'"  v-on:click="reonline(item.id)" >重新上线</a>
+
+
+
+
+
+                        </div>
+                    </div>
+                </section>
+            </li>
+
+
+        </ul>
+
+
+    </div>
+    <div  class="content deal" >
+        <ul v-for="item in outlineitems">
+
+            <li >
+                <section>
+
+                    <a class="refund-btn" href="javascript:;"></a>
+                    <a v-bind:href="'/item/'+item.id" ><img class="front_img fl"   v-bind:src="'http://127.0.0.1:8800/'+item.crowdfunding.showpic" alt="models" onerror="javascript:this.src='https://s.moimg.net/new/images/default.jpg'"></a>
+                    <div class="middle_part fl">
+                        <p class="inner1"><a href="https://zhongchou.modian.com/item/61433.html" ></a></p>
+                        <p class="inner2">商品标题：<span>{{item.crowdfunding.title}}  {{item.crowdfunding.gear.title}}</span>                        <a class="order_detail" pid="1011905281511020020028" v-bind:href="'/item/'+item.id">商品详情</a>
+                        </p>
+                        <p class="inner3">
+                            库存量：<span>￥{{item.num}}</span>
+                            <!--                            (众筹价格￥{{item.crowdfunding.gear.supportAmount}})-->
+                            <span style="float: right">众筹价格:{{item.crowdfunding.gear.supportAmount}}</span>
+                        </p>
+                        <p class="inner4">
+                            商品价格：<span>￥{{item.price}}</span>
+
+                        </p>
+                    </div>
+                    <div class="right_part fl">
+                        <div class="inner_text">
+                            <p>{{item.itemstatus}}</p>
+                        </div>
+                        <div class="bottom_btn  several" style="width: 331px">
+
+
+                            <a v-if="item.itemstatus=='审核中'||item.itemstatus=='下线中'"  v-on:click="delitem(item.id)" >删除</a>
+                            <a v-if="item.itemstatus=='上线中'"  v-on:click="edititemnum(item.id)" >改变库存</a>
+                            <a v-if="item.itemstatus=='上线中'"  v-on:click="outline(item.id)" >下线</a>
+                            <a v-if="item.itemstatus=='上线中'"  v-bind:href="'/manageitemexpress/'+item.id">更新快递</a>
+                            <a v-if="item.itemstatus=='下线中'"  v-on:click="reonline(item.id)" >重新上线</a>
+
+
+
+
+
+                        </div>
+                    </div>
+                </section>
+            </li>
+
+
+        </ul>
+
+
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="itemmessage">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">信息</h4>
+                </div>
+                <div class="modal-body">
+
+                    <input type="hidden" name="csrfmiddlewaretoken" value="GXhKc6xTUZLdLk4QpzAswByIqQnfIA76K759iPsIRfq9Vvjxu9XFHJxBhsZW0Toa">
+                    <div class="form-group">
+                        <label>更改商品库存数量</label>
+                        <input type="text" class="form-control" name="id" id="id" style="display: none">
+                        <input type="text" name="itemnum" id="itemnum" class="form-control" maxlength="20"  onkeyup="value=value.replace(/[^\d]/g,'')">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary" v-on:click="changeitemnum()" >提交</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<footer id="primary-footer" class="primary-footer" style="position: absolute; margin-top: 0px;">
+</footer>
+
+
+</body>
+<script>
+
+    $(function(){
+        $(".tab li").click(function(){
+            var n=$(this).index();
+            console.log(n)
+            $(".tab li a").removeClass("active");
+            $(this).find('a').addClass("active");
+            // $(this).addClass("active");
+            // $(".content deal").hide(function(){
+            //     $(".content deal").eq(n).show();
+            // });
+
+
+            $(".content").hide()
+            $(".content").eq(n).show()
+            // $(".content deal").hide()
+            // $(".content deal").eq(n).show()
+            // $(".con").eq(n)
+            // $(".con").hide(function(){
+            //     $(".con").eq(n).show();
+            // });
+        })
+        $(".tab li ").eq(0).click();//页面加载完成，自动切换到第一个栏目
+    })
+
+    function sumbitadd() {
+
+        $('#editModal').modal('hide');
+    }
+    function editaddress(index){
+        $.ajax({
+            url:"{% url 'getorder' %}",
+            type: "POST",
+            data: {"id":index},
+            success: function (data1) {
+                var dataObj=JSON.parse(data1)
+                var receiver=dataObj['receiver']
+                var id=dataObj['id']
+                var mobile=dataObj['mobile']
+
+                $("#mobile2").val(mobile)
+                $("#id2").val(id);
+                $("#receiver2").val(receiver);
+
+
+
+
+            }
+
+
+
+        });
+
+
+    }
+    function editmessage(index) {
+        $("#id1").val(index);
+        $.ajax({
+            url:"{% url 'getmessage' %}",
+            type: "POST",
+            data: {"id":index},
+            success: function (data1) {
+                var dataObj=JSON.parse(data1)
+                var message=dataObj['message']
+
+
+                $("#message1").val(message)
+
+
+
+
+
+            }
+
+
+
+        });
+
+
+
+
+        $('#addModal').modal('show');
+
+
+
+
+
+    }
+    var app=new Vue({
+        el:"#main",
+        data:{
+            selected: -1,
+            selectedlist: { },
+            tableData:{"id":0,"firstName":"","lastName":"","userName":""},
+            tableDatas:[
+
+            ],
+            cloneTableDatas:[ ],
+            search : "",
+            items:{},
+            statuscount:{},
+            checkitems:{},
+            onlineitems:{},
+            outlineitems:{}
+
+        },
+        //在实例被创建之后被调用
+        created: function () {
+            fetch("/getmyitembyuid",
+
+            )
+                .then(response=>response.json())
+                .then(json=>{
+                    console.log(json["statuscount"])
+                    console.log(json["items"])
+                    this.items=json["items"];
+                    this.statuscount=json["statuscount"];
+                    this.checkitems=json["checkitems"];
+                    this.onlineitems=json["onlineitems"];
+                    this.outlineitems=json["outlineitems"];
+
+
+
+
+
+
+                })
+        },
+        methods: {
+
+
+
+            delitem:function(id){
+                var id=parseInt(id);
+                layer.confirm('确定将商品删除', function(index){
+                        $.ajax({
+                            url: "/delitem",
+                            type: "POST",
+                            data:{"id":id},
+                            dataType: "json",
+                            success: function(data){
+                                if(data['status']==0){
+                                    layer.msg("商品已经成功删除", {icon: 6});
+                                    setTimeout(window.location.reload(), 3000);
+                                }
+                                else {
+                                    layer.msg("系统繁忙，请稍后再试", {icon: 6});
+                                    setTimeout(window.location.reload(), 3000);
+                                }
+
+                            }, error:function () {
+                                layer.msg("出错,未知原因", {icon: 5});
+
+                            }
+
+
+                        });
+
+                });
+
+
+            },
+
+
+            edititemnum:function(id){
+                $('#id').val(id)
+                $('#itemmessage').modal('show');
+            },
+
+
+
+            changeitemnum:function(){
+
+                var id=$("#id").val()
+                console.log(id)
+                var itemnum=$("#itemnum").val()
+                    $.ajax({
+                        url: "changitemnum",
+                        type: "POST",
+                        data:{"id":id,"itemnum":itemnum},
+                        dataType: "json",
+                        success: function(data){
+
+                            if(data['status']==1){
+                                layer.msg("你已成功更新库存数量", {icon: 6});
+                                setTimeout(window.location.reload(), 3000);
+                            }else{
+                                layer.msg("系统繁忙，请稍后再试", {icon: 5});
+                            }
+                        }
+
+                    });
+
+            },
+
+            outline:function(index){
+                layer.confirm('确定将商品下线', function(){
+
+
+                        $.ajax({
+                            url: "/line",
+                            type: "POST",
+                            data:{"id":index,"status":2},
+                            dataType: "json",
+                            success: function(data){
+                                if(data['status']==0){
+                                    layer.msg("商品已经成功下线", {icon: 6});
+                                    setTimeout(window.location.reload(), 3000);
+                                }
+                                else {
+                                    layer.msg("系统繁忙，请稍后再试", {icon: 6});
+                                    setTimeout(window.location.reload(), 3000);
+                                }
+
+
+                            }, error:function () {
+                                layer.msg("出错,未知原因", {icon: 5});
+
+                            }
+
+
+                        });
+
+                });
+            },
+
+
+
+            reonline:function(index){
+                layer.confirm('确认商品重新上线', function(){
+
+
+                    $.ajax({
+                        url: "/line",
+                        type: "POST",
+                        data:{"id":index,"status":0},
+                        dataType: "json",
+                        success: function(data){
+                            if(data['status']==0){
+                                layer.msg("您的商品已经重新上线，请耐心等待管理员重新审核", {icon: 6});
+                                setTimeout(window.location.reload(), 3000);
+                            }
+                            else {
+                                layer.msg("系统繁忙，请稍后再试", {icon: 6});
+                                setTimeout(window.location.reload(), 3000);
+                            }
+
+
+                        }, error:function () {
+                            layer.msg("出错,未知原因", {icon: 5});
+
+                        }
+
+
+                    });
+
+                });
+            },
+
+
+            notify:function(index){
+                $('#id1').val(index)
+                $('#notifyModal').modal('show');
+
+
+
+            },
+
+            itemmessage:function(cid,oldprice) {
+                $('#cid').val(cid)
+                $('#oldprice').val(oldprice);
+                $('#itemmessage').modal('show');
+            },
+            // 获取需要渲染到页面中的数据
+            getShowData:function(arr) {
+                this.cloneTableDatas = JSON.parse(JSON.stringify(arr));
+            },
+            //新增
+            add: function () {
+                $('#addModal').modal('show');
+            },
+            //提交新增
+            addSubForm:function(){
+                $('#addModal').modal('hide');
+            },
+            //编辑
+            edit: function (index) {
+
+                $.ajax({
+                    url:"{% url 'getedit' %}",
+                    type: "POST",
+                    data: {"id":index},
+                    success: function (data1) {
+                        var dataObj=JSON.parse(data1)
+                        var receiver=dataObj['receiver']
+                        var id=dataObj['id']
+                        var province=dataObj['province']
+                        var place=dataObj['place']
+                        var  mobile=dataObj['mobile']
+                        var title=dataObj['title']
+                        var district=dataObj['district']
+                        var city=dataObj['city']
+                        $("#receiver2").val(receiver);
+                        $("#id2").val(id);
+                        $("#province2").val(province)
+                        $("#place2").val(place)
+                        $("#title2").val(title)
+                        $("district2").val(district)
+                        $("city2").val(city)
+                        $("#mobile2").val(mobile)
+
+
+
+
+
+
+
+
+                    }
+
+
+
+                });
+                $('#editModal').modal('show');
+                this.selected = index;
+                this.selectedlist = JSON.parse(JSON.stringify(this.tableDatas))[index];
+            },
+            //提交编辑
+            editSubForm:function() {
+                Vue.set(this.tableDatas, this.selected, this.selectedlist);
+                this.getShowData(this.tableDatas);
+                $('#editModal').modal('hide');
+            },
+            //删除
+            del: function (index) {
+                this.tableDatas.splice(index, 1);
+                this.getShowData(this.tableDatas);
+            },
+            //查询
+            searchFn:function (e) {
+                var key=e.target.value;
+                //查询firstName列
+                if(key){
+                    var searchArray=[];
+                    this.tableDatas.forEach(function (item) {
+                        if(item.firstName.indexOf(key)>-1){
+                            searchArray.push(item);
+                        }
+                    });
+                    this.getShowData(searchArray);
+                }else{
+                    this.getShowData(this.tableDatas);
+                }
+            }
+
+
+        }
+    })
+    function getdetail(index) {
+        $.ajax({
+            url:"{% url 'getdetail' %}",
+            type: "POST",
+            data: {"id":index},
+            success: function (data1) {
+                var dataObj=JSON.parse(data1)
+                var describe=dataObj['describe']
+                var title=dataObj['title']
+                var begin_time  =dataObj['begin_time']
+                var receiver=dataObj['receiver']+'  '+dataObj['mobile']
+                var address=dataObj['address']
+                var message=dataObj['message']
+                var title=dataObj['title']
+                var huibao="¥"+dataObj['gearmoney']+"  "+ "(" +dataObj['geartitle']+ ")"
+                var release_year=dataObj['release_year']
+                var release_month=dataObj['release_month']
+                var money=dataObj['money']
+                var ordernumber=dataObj['ordernumber']
+                $("#geardescribe").html(describe)
+                $("#begin_time").html(begin_time)
+                $("#paytime").html(begin_time)
+                $("#receiver").html(receiver)
+                $("#address").html(address)
+                $("#message").html(message)
+                $("#title").html(title)
+                $("#huibao").html(huibao)
+                $("#release_time").html(release_year+"-"+release_month)
+                $("#money").html("¥"+money)
+                $("#ordernumber").html(ordernumber)
+
+
+
+
+
+
+
+            }
+
+
+
+        });
+
+
+        $(".box_container").addClass("showBox")
+
+
+
+
+    }
+    function closedetail() {
+        $(".box_container").removeClass("showBox")
+    }
+</script>
+
+</html>

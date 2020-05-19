@@ -48,5 +48,6 @@ public interface CrowfundingService {
     Integer updatereservationsum(int id);
     Integer queeservationsum(int id);
     List<Crowdfunding> notifyreservation();
+    public Integer ischeck(int id);
 
 }

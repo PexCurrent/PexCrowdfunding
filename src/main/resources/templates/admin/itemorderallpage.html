@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"   xmlns:th="http://www.thymeleaf.org">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head th:replace="nav::head(~{::title},~{::link},~{::script})">
+    <title>登陆</title>
+    <link rel="stylesheet" href="">
+    <script></script>
+</head>
+<body>
+<div style="padding: 15px;">
+
+    <div class="demoTable">
+        搜索商户：
+        <div class="layui-inline">
+            <input class="layui-input" name="keyword" id="demoReload" autocomplete="off">
+        </div>
+        <button class="layui-btn" data-type="reload" id="searchbtn">搜索</button>
+    </div>
+    <table class="layui-hide" id="LAY_table_user" lay-filter="useruv" style="line-height: 28px;"></table>
+
+</div>
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-mini" lay-event="detail">查看</a>
+    <a class="layui-btn layui-btn-mini" lay-event="refund">退款</a>
+</script>
+
+<script>
+
+
+    layui.use('table', function(){
+        var table = layui.table;
+        //方法级渲染
+        table.render({
+
+            elem: '#LAY_table_user'
+            ,url: 'getallitemorder'
+
+            ,cols: [
+                [
+                    {checkbox: true, fixed: true}
+                    ,{field:'oid', title: '订单号', width:160, sort: true, fixed: true}
+                    ,{field: 'trade_no', title: '支付宝交易号', width: 160, sort: true}
+                    ,{field: 'money', title: '付款金额', width: 160, sort: true}
+                    ,{field:'title', title: '商品名称', sort: true,width:150,templet:'<div>{{d.item.crowdfunding.title}}  {{d.item.crowdfunding.gear.title}}</div>'}
+                    ,{field:'iid', title: '商品ID', width:200, sort: true,templet:'<div>{{d.item.id}}</div>'}
+                    ,{field:'receiver', title: '收货人', width:80, sort: true}
+                    ,{field:'address', title: '地址', width:160, sort: true,edit:true}
+                    ,{field:'mobile', title: '联系电话', width:130,sort: true}
+                    ,{field:'message', title: '备注', width:130}
+                    ,{field:'status', title: '订单状态', width:100,sort: true}
+                    ,{field:'begin_time', title: '订单生成时间', width:125,sort: true}
+
+
+                    , {field:'right', title: '操作', width:300,toolbar:"#barDemo"}
+
+                    // ,{field:'datatype', title: '日期类型', width:100}
+                ]
+            ]
+            ,page: true
+            ,height: 600
+        });
+        var $ = layui.$, active = {
+            reload: function(){
+                var demoReload = $('#demoReload');
+
+                table.reload('LAY_table_user', {
+                    where: {
+                        keyword: demoReload.val()
+
+                    }
+                });
+            }
+        };
+
+        $('#searchbtn').on('click', function(){
+            var type = $(this).data('type');
+            active[type] ? active[type].call(this) : '';
+        });
+        table.on('checkbox(useruv)', function(obj){
+            console.log(obj)
+        });
+
+
+
+        //监听工具条
+        table.on('tool(useruv)', function(obj){
+            var data = obj.data;
+
+            if(obj.event === 'detail'){
+                layer.msg('ID：'+ data.oid + ' 的查看操作');
+
+
+
+            }else if (obj.event==='refund'){
+                layer.confirm('真的批准这项退款吗', function(index){
+                    if(data.status=='已完成'||data.status=='退款中'||data.status=='已退款'){
+                        layer.msg("当前订单状态下 不允许退款", {icon: 5});
+                    }else{
+
+
+
+                    $.ajax({
+                        url: "/alipayitemRefund",
+                        type: "POST",
+                        data:{"uvid":data.oid,"trade_no":data.trade_no,"money":data.money,"iid":data.item.id},
+                        dataType: "json",
+                        success: function(data){
+                            if(data['status']==0){
+                                layer.msg(data['msg'], {icon: 5});
+                                table.reload('LAY_table_user', {
+                                    // where: {
+                                    //     keyword: demoReload.val()
+                                    //
+                                    // }
+                                });
+                            }
+                            else {
+                                layer.msg(data['msg'], {icon: 6});
+                                table.reload('LAY_table_user', {
+                                    // where: {
+                                    //     keyword: demoReload.val()
+                                    //
+                                    // }
+                                });
+                            }
+
+                            console.log(data)
+                        }, error:function () {
+                            layer.msg("出错,未知原因", {icon: 5});
+
+                        }
+
+
+                    });
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+
+</body>
+</html>

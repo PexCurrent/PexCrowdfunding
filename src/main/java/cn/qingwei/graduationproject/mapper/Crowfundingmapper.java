@@ -32,7 +32,7 @@ public interface Crowfundingmapper {
 
 
 
-    @Select("select count(1) from crowdfunding where id=#{id} and status=#{status} and now()>=begin_date ")
+    @Select("select count(1) from crowdfunding where id=#{id} and status=#{status} and date_format(now(),'%Y-%m-%d')>=begin_date ")
     @Options(useGeneratedKeys=true,keyProperty = "id",keyColumn = "id")
     public Integer CrowfundingisexitbyIdbystatus(int id,int status);
 
@@ -58,7 +58,11 @@ public interface Crowfundingmapper {
 
 
     @Select("select  crowdfunding.* ,IF(crowdfunding.begin_date>=NOW() ,0,1) AS isbegin from crowdfunding where uid=#{uid}")
-
+    @Options(useGeneratedKeys=true,keyProperty = "id",keyColumn = "id")
+    @Results(
+            value = {
+                    @Result(property = "gear",column = "id",one = @One(select = "cn.qingwei.graduationproject.mapper.GearMapper.getGearbyID",fetchType= FetchType.EAGER))
+            })
     public List<Crowdfundingplus> MyCrowfundingbyUId(int uid);
 
 
@@ -67,7 +71,11 @@ public interface Crowfundingmapper {
 
 
     @Select("select crowdfunding.*,IF(crowdfunding.begin_date>=NOW() ,0,1) AS isbegin  from crowdfunding where uid=#{uid} and status=#{status} ")
-
+    @Options(useGeneratedKeys=true,keyProperty = "id",keyColumn = "id")
+    @Results(
+            value = {
+                    @Result(property = "gear",column = "id",one = @One(select = "cn.qingwei.graduationproject.mapper.GearMapper.getGearbyID",fetchType= FetchType.EAGER))
+            })
     public List<Crowdfundingplus> MyCrowfundkindingbyUId(int uid,int status);
 
     @Select("select * from crowdfunding where date_format(now(),'%Y-%m-%d')>=end_date and status=1")
@@ -175,4 +183,9 @@ public interface Crowfundingmapper {
     @Select("\n" +
             "select * from crowdfunding where status=1 and date_format(now(),'%Y-%m-%d')=begin_date")
     List<Crowdfunding> notifyreservation();
+
+    @Select("select count(1) from crowdfunding where id=#{id} and status=0 ")
+    @Options(useGeneratedKeys=true,keyProperty = "id",keyColumn = "id")
+    public Integer ischeck(int id);
+
 }
